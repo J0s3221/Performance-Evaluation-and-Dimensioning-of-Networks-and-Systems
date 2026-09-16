@@ -223,8 +223,86 @@ identical(seq1, seq2)
 
 \subsection{Exercise 3}
 
+\textbf{Objective:} Develop an R script to generate Bernoulli distributed numbers from a uniform random number generator (\texttt{runif()}), and plot a histogram of 1000 samples to informally check that the generator behaves correctly.
+
+\textbf{Approach:} A Bernoulli random variable with success probability $p$ can be generated from a uniform random variable $U \sim \text{Unif}(0,1)$ by setting the outcome to 1 if $U < p$ and 0 otherwise, using the \texttt{ifelse()} function. Here $p = 0.7$ and $n = 1000$ samples were generated.
+
+\begin{configbox}
+p <- 0.7            # success probability
+n_samples <- 1000   # number of samples
+
+u <- runif(n_samples)
+
+bernoulli_numbers <- ifelse(u < p, 1, 0)
+
+hist(bernoulli_numbers, 
+     breaks = c(-0.5, 0.5, 1.5), 
+     main = "Bernoulli Numbers Histogram (p = 0.7)", 
+     xlab = "Outcome", 
+     ylab = "Frequency",
+     col = "lightblue", 
+     xaxt = "n")
+  
+axis(1, at = c(0, 1))
+\end{configbox}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../images/E3_Bernoulli.pdf}
+    \caption{Histogram of 1000 Bernoulli samples with $p = 0.7$.}
+    \label{fig:ex3_bernoulli}
+\end{figure}
+
+\textbf{Conclusion:} As shown in Figure~\ref{fig:ex3_bernoulli}, out of 1000 samples approximately 700 outcomes are 1 and 300 are 0, matching the expected proportions for $p = 0.7$. This confirms that thresholding a uniform random variable at $p$ is a valid method for generating Bernoulli distributed samples, since $P(U < p) = p$ for $U \sim \text{Unif}(0,1)$.
+
 \subsection{Exercise 4}
 
+\textbf{Objective:} Develop an R script to generate exponentially distributed numbers from a uniform random number generator (\texttt{runif()}), and plot a histogram of 10000 samples superposed with the theoretical pdf, to informally check that the generator behaves correctly.
+
+\textbf{Approach:} Exponentially distributed samples can be generated from a uniform random variable $U \sim \text{Unif}(0,1)$ via the inverse transform method: since the exponential CDF is $F(x) = 1 - e^{-\lambda x}$, setting $U = F(X)$ and solving for $X$ gives $X = -\ln(1-U)/\lambda$. The histogram is plotted with \texttt{prob=TRUE} so that its area is normalized to 1, making it directly comparable to the theoretical pdf obtained with \texttt{dexp()}, which is superposed using \texttt{lines()}. Here $\lambda = 1.5$ and $n = 10000$ samples were generated.
+
+\begin{configbox}
+lambda <- 1.5        # rate of the exponential distribution
+n_samples <- 10000   # number of samples
+
+u <- runif(n_samples)
+exp_numbers <- -log(1 - u) / lambda
+
+hist(exp_numbers, 
+     breaks = 50, 
+     prob = TRUE, 
+     main = "Exponential Distribution (lambda = 1.5)", 
+     xlab = "Value", 
+     ylab = "Density",
+     col = "lightgray", 
+     border = "white")
+
+x_vals <- seq(0, max(exp_numbers), length.out = 500)
+pdf_vals <- dexp(x_vals, rate = lambda)
+
+lines(x_vals, pdf_vals, col = "red", lwd = 2)
+\end{configbox}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../images/E4_pdfExpoDistribution_notnorm.png}
+        \caption{\texttt{prob = FALSE}}
+        \label{fig:ex4_notnorm}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../images/E4_pdfExpoDistribution.pdf}
+        \caption{\texttt{prob = TRUE}}
+        \label{fig:ex4_norm}
+    \end{subfigure}
+    \caption{Histogram of 10000 exponentially distributed samples ($\lambda = 1.5$) with the theoretical pdf (red line) superposed, with and without density normalization.}
+    \label{fig:ex4_exp}
+\end{figure}
+
+\textbf{Conclusion:} Figure~\ref{fig:ex4_exp} shows why the \texttt{prob=TRUE} option is essential for this comparison. In Figure~\ref{fig:ex4_notnorm} (\texttt{prob=FALSE}), the histogram bars represent raw counts per bin, whose total sums to $n = 10000$, while the \texttt{dexp()} curve has area 1 by definition; the two are on completely different scales, so the pdf line appears flat against the axis and gives no useful comparison. In Figure~\ref{fig:ex4_norm} (\texttt{prob=TRUE}), the histogram is rescaled so that the total area of the bars is also 1, matching the normalization of the theoretical pdf, and the empirical histogram now closely follows the red curve. This confirms that the inverse transform method correctly generates exponentially distributed samples from uniform random numbers, and that density normalization is a necessary condition for a visual histogram-vs-pdf comparison to be meaningful.
 \subsection{Exercise 5}
 
 % ======================================================================

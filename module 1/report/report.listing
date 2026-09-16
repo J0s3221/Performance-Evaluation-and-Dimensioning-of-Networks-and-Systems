@@ -1,9 +1,19 @@
-set.seed(123)
-seq1 <- runif(5)
+lambda <- 1.5        # rate of the exponential distribution
+n_samples <- 10000   # number of samples
 
-seq_random <- runif(5)   # generated without resetting the seed
+u <- runif(n_samples)
+exp_numbers <- -log(1 - u) / lambda
 
-set.seed(123)
-seq2 <- runif(5)
+hist(exp_numbers,
+     breaks = 50,
+     prob = TRUE,
+     main = "Exponential Distribution (lambda = 1.5)",
+     xlab = "Value",
+     ylab = "Density",
+     col = "lightgray",
+     border = "white")
 
-identical(seq1, seq2)
+x_vals <- seq(0, max(exp_numbers), length.out = 500)
+pdf_vals <- dexp(x_vals, rate = lambda)
+
+lines(x_vals, pdf_vals, col = "red", lwd = 2)
