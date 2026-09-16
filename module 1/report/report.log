@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.24)  15 SEP 2026 20:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.24)  16 SEP 2026 23:36
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -791,7 +791,26 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \tf@toc=\write5
 \openout5 = `report.toc'.
 
- [1] [2] [3] (./report.aux)
+ [1] [2]
+\g__tcobox_out_iow=\write6
+\openout6 = `report.listing'.
+
+ (./report.listing)
+<../images/E1_Histogram.pdf, id=179, 505.89pt x 505.89pt>
+File: ../images/E1_Histogram.pdf Graphic file (type pdf)
+<use ../images/E1_Histogram.pdf>
+Package pdftex.def Info: ../images/E1_Histogram.pdf  used on input line 186.
+(pdftex.def)             Requested size: 290.22107pt x 290.22835pt.
+ [3 <../images/E1_Histogram.pdf>]
+\openout6 = `report.listing'.
+
+ (./report.listing)
+<../images/E2_Deterministic.png, id=199, 130.98938pt x 100.87688pt>
+File: ../images/E2_Deterministic.png Graphic file (type png)
+<use ../images/E2_Deterministic.png>
+Package pdftex.def Info: ../images/E2_Deterministic.png  used on input line 213.
+(pdftex.def)             Requested size: 145.11053pt x 111.75453pt.
+ [4 <../images/E2_Deterministic.png>] [5] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -800,18 +819,18 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 379FDD4DA7774F241724A5E5F5DC7BFE;3121.
  ) 
 Here is how much of TeX's memory you used:
- 34884 strings out of 474222
- 736000 string characters out of 5748733
- 1933975 words of memory out of 5000000
- 56584 multiletter control sequences out of 15000+600000
- 568082 words of font info for 75 fonts, out of 8000000 for 9000
+ 35239 strings out of 474222
+ 740171 string characters out of 5748733
+ 1957975 words of memory out of 5000000
+ 56915 multiletter control sequences out of 15000+600000
+ 568250 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 101i,12n,117p,539b,918s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on report.pdf (4 pages, 115257 bytes).
+ 101i,12n,117p,907b,1563s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on report.pdf (6 pages, 160927 bytes).
 PDF statistics:
- 218 PDF objects out of 1000 (max. 8388607)
- 172 compressed objects within 2 object streams
- 28 named destinations out of 1000 (max. 500000)
- 338 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 269 PDF objects out of 1000 (max. 8388607)
+ 212 compressed objects within 3 object streams
+ 46 named destinations out of 1000 (max. 500000)
+ 348 words of extra memory for PDF output out of 10000 (max. 10000000)
 
