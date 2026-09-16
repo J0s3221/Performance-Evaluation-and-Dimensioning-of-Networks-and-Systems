@@ -1,13 +1,14 @@
 # Fdb version 4
-["pdflatex"] 1789601939.50645 "/home/ataid_jo/DDRS/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 1/report/report.tex" "report.pdf" "report" 1789601940.29743 0
+["pdflatex"] 1789602559.26946 "/home/ataid_jo/DDRS/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 1/report/report.tex" "report.pdf" "report" 1789602560.05113 0
   "../images/E1_Histogram.pdf" 1789509037.87133 4715 e9bec20af6b19eaa23deecfb58a950f9 ""
   "../images/E2_Deterministic.png" 1789597851.76895 16143 b99b6318183b91fc2938997be7f31668 ""
   "../images/E3_Bernoulli.pdf" 1789509037.87133 4586 4f6358392c40e64d91d6359141a20d9c ""
   "../images/E4_pdfExpoDistribution.pdf" 1789509037.87133 7558 8cf4fba6b83032a6ae32751631f527c8 ""
   "../images/E4_pdfExpoDistribution_notnorm.png" 1789601927.33255 27081 1cdb63a2afaac17715d4a700c24eac2e ""
+  "../images/E5_Console.png" 1789602486.52456 62563 951b1cde7a5d8064ca4bd08bbd7d4b3d ""
   "../images/IST_A.png" 1789498934.15243 57556 13acfcbf04b8e16bd9840de19700b10c ""
   "/etc/texmf/web2c/texmf.cnf" 1777045507.75276 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/ataid_jo/DDRS/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 1/report/report.tex" 1789601939.34091 14448 d5069eb53962a9b518be841a8b3eada0 ""
+  "/home/ataid_jo/DDRS/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 1/report/report.tex" 1789602559.11424 16824 beee0290d4a1066b9b7b1c7d6d7f1c3e ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -225,11 +226,11 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1777045531.67963 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1777045637 8213238 f7f1ddc7879e0990d63469a7d38238bc ""
-  "report.aux" 1789601940.23924 4704 e0c5115e09beb30834046223e88e4fde "pdflatex"
-  "report.listing" 1789601940.19524 502 b7f1e4a9317f0a9334d94bae3bdef996 "pdflatex"
-  "report.out" 1789601940.23924 3121 379fdd4da7774f241724a5e5f5dc7bfe "pdflatex"
-  "report.tex" 1789601939.34091 14448 d5069eb53962a9b518be841a8b3eada0 ""
-  "report.toc" 1789601940.23924 1773 9fa58a800e006c9ec92be6c51298578d "pdflatex"
+  "report.aux" 1789602559.99424 5074 8d7381b391503d6530ea927b63f62cda "pdflatex"
+  "report.listing" 1789602559.9319 314 8a85b8d8be338989c2c022578014974f "pdflatex"
+  "report.out" 1789602559.99424 3121 379fdd4da7774f241724a5e5f5dc7bfe "pdflatex"
+  "report.tex" 1789602559.11424 16824 beee0290d4a1066b9b7b1c7d6d7f1c3e ""
+  "report.toc" 1789602559.99424 1773 e8ce4d494c7b5f02e4fb94b9650029f5 "pdflatex"
   (generated)
   "report.aux"
   "report.listing"

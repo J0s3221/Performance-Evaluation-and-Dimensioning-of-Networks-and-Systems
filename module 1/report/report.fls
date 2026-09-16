@@ -438,6 +438,15 @@ INPUT ../images/E4_pdfExpoDistribution.pdf
 INPUT ../images/E4_pdfExpoDistribution.pdf
 INPUT ../images/E4_pdfExpoDistribution.pdf
 INPUT ../images/E4_pdfExpoDistribution.pdf
+OUTPUT report.listing
+INPUT ./report.listing
+INPUT ./report.listing
+INPUT report.listing
+INPUT ../images/E5_Console.png
+INPUT ../images/E5_Console.png
+INPUT ../images/E5_Console.png
+INPUT ../images/E5_Console.png
+INPUT ../images/E5_Console.png
 INPUT report.aux
 INPUT ./report.out
 INPUT ./report.out

@@ -303,7 +303,37 @@ lines(x_vals, pdf_vals, col = "red", lwd = 2)
 \end{figure}
 
 \textbf{Conclusion:} Figure~\ref{fig:ex4_exp} shows why the \texttt{prob=TRUE} option is essential for this comparison. In Figure~\ref{fig:ex4_notnorm} (\texttt{prob=FALSE}), the histogram bars represent raw counts per bin, whose total sums to $n = 10000$, while the \texttt{dexp()} curve has area 1 by definition; the two are on completely different scales, so the pdf line appears flat against the axis and gives no useful comparison. In Figure~\ref{fig:ex4_norm} (\texttt{prob=TRUE}), the histogram is rescaled so that the total area of the bars is also 1, matching the normalization of the theoretical pdf, and the empirical histogram now closely follows the red curve. This confirms that the inverse transform method correctly generates exponentially distributed samples from uniform random numbers, and that density normalization is a necessary condition for a visual histogram-vs-pdf comparison to be meaningful.
+
 \subsection{Exercise 5}
+
+\textbf{Objective:} Develop an R script to generate the arrival times of a Poisson process, and perform a simple test to verify that the sample rate matches the population rate.
+
+\textbf{Approach:} A Poisson process with rate $\lambda$ has exponentially distributed inter-arrival times with parameter $\lambda$. Thus, inter-arrival times can be generated directly with \texttt{rexp()}, and the arrival times are obtained by accumulating them with \texttt{cumsum()}. To verify the generator, the sample rate is estimated from the generated data and compared with the population rate $\lambda$ used to generate it.
+
+\begin{configbox}
+lambda <- 2.0         
+n_arrivals <- 10000
+
+inter_arrival_times <- rexp(n_arrivals, rate = lambda)
+
+arrival_times <- cumsum(inter_arrival_times)
+
+estimated_lambda <- 1/mean(inter_arrival_times)
+
+cat("Population rate (lambda):", lambda, "\n")
+cat("Estimated rate (sample):", estimated_lambda, "\n")
+
+head(arrival_times, 10)
+\end{configbox}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../images/E5_Console.png}
+    \caption{R console output showing the population rate, the estimated rate, and the first 10 arrival times.}
+    \label{fig:ex5_console}
+\end{figure}
+
+\textbf{Conclusion:} As shown in Figure~\ref{fig:ex5_console}, with a population rate of $\lambda = 2$, the estimated rate from the sample is $\hat{\lambda} \approx 1.992$, very close to the true value. This result follows directly from the definition of $\lambda$: it represents the average number of arrivals per unit time, i.e., the rate of the process. Its reciprocal, $1/\lambda$, is the mean time between consecutive arrivals -- the expected value of the exponential inter-arrival time distribution, $E[T] = 1/\lambda$. Since the sample mean of the generated inter-arrival times, $\overline{T}$, is an estimator of $E[T]$, taking its reciprocal, $1/\overline{T}$, naturally produces an estimator of $\lambda$ itself. In other words, $\lambda$ measures "events per unit time" while $E[T]$ measures "time per event", so the two quantities are inverses of each other by construction, and computing $1/\overline{T}$ recovers an estimate of the rate that generated the data. The close agreement between $\hat{\lambda}$ and $\lambda$ confirms that the inter-arrival times were correctly generated as exponentially distributed with rate $\lambda$.
 
 % ======================================================================
 \section{C. Programming discrete event simulators}
