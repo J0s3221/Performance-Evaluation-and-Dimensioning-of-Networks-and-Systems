@@ -1,5 +1,7 @@
 ArrivalRate=1
 ServiceRate=2 
+BusyTime=0
+LastEventTime=0
 Time=0
 NumQueueCompleted=0
 ServerStatus=0
@@ -13,6 +15,10 @@ EventList=c(rexp(1,ArrivalRate),Inf)
 while (NumQueueCompleted<1000) {
   NextEventType=which.min(EventList)
   Time=EventList[NextEventType]
+  if (ServerStatus==1) {
+    BusyTime=BusyTime+(Time-LastEventTime)
+  }
+  LastEventTime=Time
   if (NextEventType==1) {
     EventList[1]=Time+rexp(1,ArrivalRate)
     if (ServerStatus==1) {
@@ -24,7 +30,6 @@ while (NumQueueCompleted<1000) {
       EventList[2]=Time+rexp(1,ServiceRate)
     }
   } else {
-    # the customer currently in service departs now
     AcumSystemTime=AcumSystemTime+Time-InServiceArrivalTime
     NumQueueCompleted=NumQueueCompleted+1
     if (NumInQueue==0) {
@@ -41,3 +46,4 @@ while (NumQueueCompleted<1000) {
 }
 AvgDelay=AcumDelay/NumQueueCompleted
 AvgTimeInSystem=AcumSystemTime/NumQueueCompleted
+Utilization=BusyTime/Time
