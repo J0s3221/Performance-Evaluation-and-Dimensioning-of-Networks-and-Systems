@@ -343,22 +343,29 @@ head(arrival_times, 10)
 
 \textbf{Objective:} Modify the M/M/1 simulator of Annex A to also estimate the average delay in system and the server utilization, and compare the results against the theoretical values (Annex B), for at least two values of $\lambda/\mu$ with $\lambda/\mu < 1$.
 
-\textbf{Approach:} Starting from the simulator in Annex A, three changes were made to track the average delay in system, in addition to the average delay in queue already computed by the original code:
+\textbf{Approach:} Starting from the simulator in Annex A, the following changes were made to also track the average delay in system and the server utilization, in addition to the average delay in queue already computed by the original code:
 
 \begin{itemize}
-    \item Two new variables were initialized before the main loop: \texttt{AcumSystemTime=0}, to accumulate the total time each customer spends in the system, and \texttt{InServiceArrivalTime=NA}, to store the arrival time of the customer currently being served.
-    \item In the arrival branch, when the server is free (\texttt{ServerStatus==0}), the customer's arrival time is now stored in \texttt{InServiceArrivalTime} instead of immediately incrementing \texttt{NumQueueCompleted}:
+    \item Four new variables were initialized before the main loop: \texttt{AcumSystemTime=0} and \texttt{InServiceArrivalTime=NA}, to compute the delay in system (as described previously), and \texttt{BusyTime=0} together with \texttt{LastEventTime=0}, to track server utilization.
+    \item At the very start of each loop iteration, right after \texttt{Time} is updated and \emph{before} branching on the event type, the interval since the last event is added to \texttt{BusyTime} if the server was busy during that interval. This must be done unconditionally for both arrivals and departures, since the server can remain busy across either type of event:
     \begin{configbox}
-# before: NumQueueCompleted=NumQueueCompleted+1
+NextEventType=which.min(EventList)
+Time=EventList[NextEventType]
+if (ServerStatus==1) {                    # NEW
+  BusyTime=BusyTime+(Time-LastEventTime)  # NEW
+}                                          # NEW
+LastEventTime=Time                        # NEW
+    \end{configbox}
+    \item In the arrival branch, when the server is free, the customer's arrival time is stored in \texttt{InServiceArrivalTime} (as before):
+    \begin{configbox}
 ServerStatus=1
 InServiceArrivalTime=Time          # NEW
 EventList[2]=Time+rexp(1,ServiceRate)
     \end{configbox}
-    \item In the departure branch, the sojourn time of the customer leaving is added to \texttt{AcumSystemTime} and \texttt{NumQueueCompleted} is incremented once, unconditionally, at the top of the branch (replacing the increment that previously only occurred when the queue was non-empty). If another customer enters service from the queue, \texttt{InServiceArrivalTime} is updated accordingly:
+    \item In the departure branch, the sojourn time of the departing customer is added to \texttt{AcumSystemTime}, and \texttt{InServiceArrivalTime} is updated if another customer enters service:
     \begin{configbox}
-# customer in service departs now
 AcumSystemTime=AcumSystemTime+Time-InServiceArrivalTime   # NEW
-NumQueueCompleted=NumQueueCompleted+1                     # moved here
+NumQueueCompleted=NumQueueCompleted+1
 if (NumInQueue==0) {
   ServerStatus=0
   EventList[2]=Inf
@@ -370,53 +377,102 @@ if (NumInQueue==0) {
   EventList[2]=Time+rexp(1,ServiceRate)
 }
     \end{configbox}
-    \item After the loop, the average delay in system is computed alongside the average delay in queue:
+    \item After the loop, the average delay in system and the server utilization are computed alongside the average delay in queue:
     \begin{configbox}
 AvgDelay=AcumDelay/NumQueueCompleted
 AvgTimeInSystem=AcumSystemTime/NumQueueCompleted   # NEW
+Utilization=BusyTime/Time                          # NEW
     \end{configbox}
 \end{itemize}
 
-\begin{itemize}
-    \item Two more variables were initialized before the main loop: \texttt{BusyTime=0}, to accumulate the total time the server spends busy, and \texttt{LastEventTime=0}, to track the time of the previous event.
-    \item At the very start of each loop iteration, right after \texttt{Time} is updated, the elapsed interval since the last event is added to \texttt{BusyTime} if the server was busy during that interval:
-    \begin{configbox}
-NextEventType=which.min(EventList)
-Time=EventList[NextEventType]
-if (ServerStatus==1) {
-  BusyTime=BusyTime+(Time-LastEventTime)   # NEW
-}
-LastEventTime=Time                         # NEW
-    \end{configbox}
-    This works for any event type, since \texttt{ServerStatus} always reflects whether the server was busy over the interval $[\text{LastEventTime}, \text{Time})$ that has just elapsed, regardless of what happens at time \texttt{Time} itself.
-    \item After the loop, the simulated server utilization is computed as the fraction of total simulated time the server was busy:
-    \begin{configbox}
-Utilization=BusyTime/Time   # NEW
-    \end{configbox}
-\end{itemize}
-
-The simulation was run with $\text{NumQueueCompleted}=1000$ for three stable configurations ($\lambda/\mu<1$) and, for comparison, one critically loaded configuration ($\lambda/\mu=1$). The theoretical values were computed from Annex B: $W_Q = \dfrac{\lambda}{\mu(\mu-\lambda)}$ and $W = \dfrac{1}{\mu-\lambda}$.
+The simulation was run with $\text{NumQueueCompleted}=1000$ for three stable configurations ($\lambda/\mu<1$) and, for comparison, one critically loaded configuration ($\lambda/\mu=1$). The theoretical values were computed from Annex B: $W_Q = \dfrac{\lambda}{\mu(\mu-\lambda)}$, $W = \dfrac{1}{\mu-\lambda}$, and $\rho = \lambda/\mu$.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
-$\lambda$ & $\mu$ & $\rho=\lambda/\mu$ & $W_Q$ (sim.) & $W_Q$ (theo.) & $W$ (sim.) & $W$ (theo.) \\
+$\lambda$ & $\mu$ & $W_Q$ (sim.) & $W_Q$ (theo.) & $W$ (sim.) & $W$ (theo.) & $\rho$ (sim.) & $\rho$ (theo.) \\
 \hline
-1 & 2 & 0.50  & 0.4572 & 0.5000 & 0.9473 & 1.0000 \\
-1 & 3 & 0.33  & 0.1678 & 0.1667 & 0.5142 & 0.5000 \\
-1 & 4 & 0.25  & 0.0727 & 0.0833 & 0.3186 & 0.3333 \\
+1 & 2 & 0.4572 & 0.5000 & 0.9473 & 1.0000 & 0.5421 & 0.5000 \\
+1 & 3 & 0.1678 & 0.1667 & 0.5142 & 0.5000 & 0.2975 & 0.3333 \\
+1 & 4 & 0.0727 & 0.0833 & 0.3186 & 0.3333 & 0.2732 & 0.2500 \\
 \hline
-2 & 2 & 1.00  & 3.3556 & $\infty$ & 3.8212 & $\infty$ \\
+2 & 2 & 3.3556 & $\infty$ & 3.8212 & $\infty$ & 0.9939 & 1.0000 \\
 \hline
 \end{tabular}
-\caption{Simulated vs. theoretical average delay in queue ($W_Q$) and average delay in system ($W$), for different $\lambda/\mu$ ratios.}
+\caption{Simulated vs. theoretical average delay in queue ($W_Q$), average delay in system ($W$), and server utilization ($\rho$), for different $\lambda/\mu$ ratios.}
 \label{tab:ex6_results}
 \end{table}
 
-\textbf{Conclusion:} As shown in Table~\ref{tab:ex6_results}, for all stable configurations ($\rho<1$) the simulated $W_Q$ and $W$ closely match the theoretical values predicted by the M/M/1 formulas, with the small discrepancies attributable to the finite sample size (1000 completed customers) and the inherent variability of the simulation. As expected, both the simulated and theoretical delays increase sharply as $\rho=\lambda/\mu$ approaches 1, since the M/M/1 formulas have $(\mu-\lambda)$ in the denominator: the closer the system operates to saturation, the more sensitive the queue is to congestion. The last row ($\lambda=\mu=2$, $\rho=1$) illustrates this directly: the theoretical delay is infinite in the steady state (the queue is not stable, since arrivals occur, on average, as fast as they can be served), yet the simulation returns a large but finite value. This finite simulated value is not a valid estimate of a steady-state quantity; it merely reflects that, over a finite run of 1000 customers, the queue built up substantially without yet diverging, and confirms that the condition $\rho<1$ required by the exercise is essential for the M/M/1 system to reach a stable steady state.
+\textbf{Conclusion:} As shown in Table~\ref{tab:ex6_results}, for all stable configurations ($\rho<1$) the simulated $W_Q$, $W$, and $\rho$ closely match the theoretical values predicted by the M/M/1 formulas, with the small discrepancies attributable to the finite sample size (1000 completed customers) and the inherent variability of the simulation. Both the delays and the utilization increase as $\lambda/\mu$ approaches 1: for the M/M/1 system, $\rho=\lambda/\mu$ is precisely the theoretical fraction of time the server is busy, and this matches well against \texttt{BusyTime/Time} measured directly from the simulated trajectory. The last row ($\lambda=\mu=2$, $\rho=1$) illustrates the boundary of stability: the theoretical delays are infinite in the steady state, since the system is critically loaded (arrivals occur, on average, as fast as they can be served), yet the simulation returns large but finite delay values together with a simulated utilization close to 1 ($0.9939$). This finite delay is not a valid estimate of a steady-state quantity; it simply reflects that, over a finite run of 1000 customers, the queue built up substantially -- with the server almost always busy -- without the delay yet diverging. This confirms that the condition $\rho<1$ required by the exercise is essential for the M/M/1 system to reach a stable steady state, and shows that server utilization, unlike the mean queuing delay, remains a well-defined and finite quantity even at the stability boundary.
 
 \subsection{Exercise 7}
+
+\textbf{Objective:} Develop a simulator for estimating the average delay in queue of an M/M/2 system, and compare the results with the theoretical values (Annex C), for at least two values of $\lambda/(2\mu)$ with $\lambda/(2\mu)<1$.
+
+\textbf{Approach:} The M/M/1 simulator of Annex A was extended to two parallel servers. The key changes are: \texttt{ServerStatus} becomes a length-2 vector (one entry per server), and the event list has three entries instead of two -- one for arrivals and one departure event per server. On arrival, if both servers are busy the customer joins the queue; otherwise the customer is assigned to the first free server found with \texttt{which(ServerStatus==0)[1]}. On a departure, the freed server either goes idle (if the queue is empty) or immediately picks up the next customer in queue, and the corresponding delay is accumulated exactly as in the M/M/1 case.
+
+\begin{configbox}
+ArrivalRate=1
+ServiceRate=2
+Time=0
+NumQueueCompleted=0
+ServerStatus=c(0,0)          # 0 = idle, 1 = busy, one entry per server
+NumInQueue=0
+AcumDelay=0
+QueueArrivalTime=c()
+EventList=c(rexp(1,ArrivalRate), Inf, Inf)  # [arrival, dep@server1, dep@server2]
+
+while (NumQueueCompleted<1000) {
+  NextEventType=which.min(EventList)
+  Time=EventList[NextEventType]
+
+  if (NextEventType==1) {                    # ARRIVAL
+    EventList[1]=Time+rexp(1,ArrivalRate)
+    if (all(ServerStatus==1)) {               # both servers busy -> join queue
+      QueueArrivalTime=c(QueueArrivalTime,Time)
+      NumInQueue=NumInQueue+1
+    } else {                                  # a server is free -> start service
+      freeServer=which(ServerStatus==0)[1]
+      ServerStatus[freeServer]=1
+      NumQueueCompleted=NumQueueCompleted+1
+      EventList[freeServer+1]=Time+rexp(1,ServiceRate)
+    }
+  } else {                                    # DEPARTURE from server (NextEventType-1)
+    server=NextEventType-1
+    if (NumInQueue==0) {
+      ServerStatus[server]=0
+      EventList[NextEventType]=Inf
+    } else {
+      AcumDelay=AcumDelay+Time-QueueArrivalTime[1]
+      QueueArrivalTime=QueueArrivalTime[-1]
+      NumInQueue=NumInQueue-1
+      NumQueueCompleted=NumQueueCompleted+1
+      EventList[NextEventType]=Time+rexp(1,ServiceRate)
+    }
+  }
+}
+
+AvgDelay=AcumDelay/NumQueueCompleted
+\end{configbox}
+
+The simulation was run with $\text{NumQueueCompleted}=1000$ for two configurations satisfying $\rho=\lambda/(2\mu)<1$. The theoretical average delay in queue was computed from Annex C: $W_Q = P_Q \dfrac{\rho}{\lambda(1-\rho)}$, where $P_Q$ is the probability that an arrival finds both servers busy (Erlang C formula, $m=2$).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$\lambda$ & $\mu$ & $\rho=\lambda/(2\mu)$ & $W_Q$ (sim.) & $W_Q$ (theo.) \\
+\hline
+1 & 2 & 0.25 & 0.0556 & 0.0333 \\
+2 & 2 & 0.50 & 0.1380 & 0.1667 \\
+\hline
+\end{tabular}
+\caption{Simulated vs. theoretical average delay in queue ($W_Q$) for the M/M/2 system, for different $\lambda/(2\mu)$ ratios.}
+\label{tab:ex7_results}
+\end{table}
+
+\textbf{Conclusion:} As shown in Table~\ref{tab:ex7_results}, the simulated $W_Q$ is reasonably close to the theoretical value in both configurations, with the discrepancy attributable to the finite sample size (1000 completed customers) and the inherent variability of a single simulation run -- this is discussed further in Exercise 12, which shows that a single run is generally not enough to draw firm conclusions. As with the M/M/1 system, the average delay in queue increases with $\rho=\lambda/(2\mu)$, since higher load makes it more likely that an arriving customer finds both servers busy. Comparing with Exercise 6, for a similar load level the M/M/2 system exhibits substantially lower delays than the corresponding M/M/1 system (e.g., $\rho=0.5$ gives $W_Q\approx0.17$ here, versus $W_Q\approx0.50$ for M/M/1 with $\lambda=1,\mu=2$), illustrating the benefit of server pooling: two servers each handling half the traffic intensity of an equivalent single fast server yield lower expected waiting times, since the probability of both being simultaneously busy is lower than the probability of a single server being busy.
 
 % ======================================================================
 \section{D. Estimation of probabilities}
