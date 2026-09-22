@@ -19,23 +19,23 @@ while (NumQueueCompleted<1000) {
     BusyTime=BusyTime+(Time-LastEventTime)
   }
   LastEventTime=Time
-  if (NextEventType==1) {
+  if (NextEventType==1) { # Arrival
     EventList[1]=Time+rexp(1,ArrivalRate)
-    if (ServerStatus==1) {
-      QueueArrivalTime=c(QueueArrivalTime,Time)
+    if (ServerStatus==1) { # serve proccessing previous arrival
+      QueueArrivalTime=c(QueueArrivalTime,Time) # register time queue
       NumInQueue=NumInQueue+1
     } else {
       ServerStatus=1
       InServiceArrivalTime=Time
       EventList[2]=Time+rexp(1,ServiceRate)
     }
-  } else {
+  } else { # departure
     AcumSystemTime=AcumSystemTime+Time-InServiceArrivalTime
     NumQueueCompleted=NumQueueCompleted+1
-    if (NumInQueue==0) {
+    if (NumInQueue==0) { # no one in queue
       ServerStatus=0
       EventList[2]=Inf
-    } else {
+    } else { # there is a queue so put next process 
       AcumDelay=AcumDelay+Time-QueueArrivalTime[1]
       InServiceArrivalTime=QueueArrivalTime[1]
       QueueArrivalTime=QueueArrivalTime[-1]

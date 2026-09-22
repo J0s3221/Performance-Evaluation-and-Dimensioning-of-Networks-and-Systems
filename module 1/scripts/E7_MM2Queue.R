@@ -5,6 +5,7 @@ NumQueueCompleted=0
 ServerStatus=c(0,0)          # 0 = idle, 1 = busy, one entry per server
 NumInQueue=0
 AcumDelay=0
+AvgDelay=0
 QueueArrivalTime=c()
 EventList=c(rexp(1,ArrivalRate), Inf, Inf)  # [arrival, dep@server1, dep@server2]
 
@@ -38,4 +39,4 @@ while (NumQueueCompleted<1000) {
   }
 }
 
-AcumDelay/NumQueueCompleted
+AvgDelay=AcumDelay/NumQueueCompleted
