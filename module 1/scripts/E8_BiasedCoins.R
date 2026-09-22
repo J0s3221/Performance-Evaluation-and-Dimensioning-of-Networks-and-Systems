@@ -23,7 +23,7 @@ simulation_probability <- mean(number_of_heads == 2)
 # Valor exato: P(X = 2), com X ~ Binomial(5, 0.7).
 exact_probability <- choose(n_coins, 2) *
   p_head^2 *
-  (1 - p_head)^(n_coins - 2)
+  (1 - p_head)^(n_coins - 2) 
 
 cat("Probabilidade estimada por simulação:", simulation_probability, "\n")
 cat("Probabilidade exata:", exact_probability, "\n")
