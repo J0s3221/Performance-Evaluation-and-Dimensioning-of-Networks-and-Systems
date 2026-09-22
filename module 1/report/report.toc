@@ -12,12 +12,12 @@
 \contentsline {subsection}{\numberline {4.2}Exercise 7}{11}{subsection.4.2}%
 \contentsline {section}{\numberline {5}D. Estimation of probabilities}{13}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Exercise 8}{13}{subsection.5.1}%
-\contentsline {section}{\numberline {6}E. Revisions of statistics}{13}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Exercise 9}{13}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Exercise 10}{13}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Exercise 11}{13}{subsection.6.3}%
-\contentsline {section}{\numberline {7}F. Output data analysis}{13}{section.7}%
-\contentsline {subsection}{\numberline {7.1}Exercise 12}{13}{subsection.7.1}%
-\contentsline {subsection}{\numberline {7.2}Exercise 13}{13}{subsection.7.2}%
-\contentsline {subsection}{\numberline {7.3}Exercise 14}{13}{subsection.7.3}%
-\contentsline {section}{\numberline {8}Conclusion}{13}{section.8}%
+\contentsline {section}{\numberline {6}E. Revisions of statistics}{15}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Exercise 9}{15}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Exercise 10}{15}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Exercise 11}{15}{subsection.6.3}%
+\contentsline {section}{\numberline {7}F. Output data analysis}{15}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Exercise 12}{15}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Exercise 13}{15}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Exercise 14}{15}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Conclusion}{15}{section.8}%

@@ -480,6 +480,51 @@ $\lambda$ & $\mu$ & $\rho=\lambda/(2\mu)$ & $W_Q$ (sim.) & $W_Q$ (theo.) \\
 
 \subsection{Exercise 8}
 
+\textbf{Objective:} Estimate, through simulation, the probability of obtaining exactly two heads when five biased coins are tossed, where the probability of obtaining a head is $p=0.7$. The simulated estimate is then compared with the exact probability.
+
+\textbf{Approach:} Each coin toss was generated from a uniform random variable $U \sim \mathrm{Unif}(0,1)$. A toss was classified as a head when $U < p$ and as a tail otherwise. This experiment was repeated 1000 times, with five tosses in each experiment. The estimated probability is the fraction of experiments that resulted in exactly two heads. The seed was fixed to make the result reproducible.
+
+\begin{configbox}
+p_head <- 0.7
+n_coins <- 5
+n_experiments <- 1000
+
+set.seed(8)
+
+random_values <- matrix(
+    runif(n_experiments * n_coins),
+    nrow = n_experiments,
+    ncol = n_coins
+)
+
+coin_tosses <- random_values < p_head
+number_of_heads <- rowSums(coin_tosses)
+
+simulation_probability <- mean(number_of_heads == 2)
+\end{configbox}
+
+\textbf{Exact probability:} Let $X$ denote the number of heads in five tosses. Since the tosses are independent and have the same probability of success, $X \sim \mathrm{Binomial}(5,0.7)$. Therefore,
+\[
+P(X=2) = \binom{5}{2}(0.7)^2(1-0.7)^3 = 0.1323.
+\]
+
+The simulation and exact results are shown in Table~\ref{tab:ex8_results}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+Simulation probability & Exact probability & Absolute error \\
+\hline
+0.1480 & 0.1323 & 0.0157 \\
+\hline
+\end{tabular}
+\caption{Simulated and exact probability of obtaining exactly two heads.}
+\label{tab:ex8_results}
+\end{table}
+
+\textbf{Conclusion:} The estimated probability is $0.1480$, while the exact value is $0.1323$. The absolute error is $0.0157$, which is expected because the estimate is based on a finite number of experiments and therefore is subject to random variation. Increasing the number of repetitions would generally make the simulated probability closer to the exact value.
+
 % ======================================================================
 \section{E. Revisions of statistics}
 % ======================================================================
