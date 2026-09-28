@@ -487,6 +487,20 @@ INPUT ../images/E9_packet_sizes.pdf
 INPUT ../images/E9_packet_sizes.pdf
 INPUT ../images/E9_packet_sizes.pdf
 INPUT ../images/E9_packet_sizes.pdf
+INPUT ../images/ping RTTs.png
+INPUT ../images/ping RTTs.png
+INPUT ../images/ping RTTs.png
+INPUT ../images/ping RTTs.png
+INPUT ../images/ping RTTs.png
+OUTPUT report.listing
+INPUT ./report.listing
+INPUT ./report.listing
+INPUT report.listing
+INPUT ../images/E10_CI.pdf
+INPUT ../images/E10_CI.pdf
+INPUT ../images/E10_CI.pdf
+INPUT ../images/E10_CI.pdf
+INPUT ../images/E10_CI.pdf
 OUTPUT report.listing
 INPUT ./report.listing
 INPUT ./report.listing

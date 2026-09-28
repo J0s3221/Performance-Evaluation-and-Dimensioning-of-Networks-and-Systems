@@ -574,6 +574,56 @@ Download & 1,023,788 & 514 & 1,023,274 & 1121.06 & 1304 \\
 
 \subsection{Exercise 10}
 
+\textbf{Objective:} Measure 10 Round Trip Times (RTTs) to a distant country and determine two 95\% confidence intervals for the average RTT, one based on the Student's $t$ distribution and the other on the Normal distribution, discussing which is preferable.
+
+\textbf{Approach:} The destination, \texttt{www.uq.edu.au} (University of Queensland, Australia), was suggested by an LLM-based chatbot that was consulted for a suitable distant host; the measurements themselves were collected by us. Ten RTTs were obtained in a single run of \texttt{ping -c 10}, all of them valid replies (Figure~\ref{fig:ex10_ping}). The sample mean $\bar{x}$, standard deviation $s$ and standard error $s/\sqrt{n}$ were computed, and the critical points were obtained with \texttt{qnorm()} and \texttt{qt()}. Both intervals have the form $\bar{x} \pm c \cdot s/\sqrt{n}$, differing only in the critical value $c$: $z_{0.975}$ for the Normal and $t_{0.975,\,n-1}$ for Student's $t$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../images/ping RTTs.png}
+    \caption{Output of \texttt{ping -c 10 www.uq.edu.au}.}
+    \label{fig:ex10_ping}
+\end{figure}
+
+\begin{configbox}
+rtt <- c(325, 317, 316, 316, 316, 317, 316, 317, 316, 321)   # RTT samples (ms)
+
+n    <- length(rtt)
+xbar <- mean(rtt)
+s    <- sd(rtt)
+se   <- s / sqrt(n)                          # standard error of the mean
+
+alpha  <- 0.05                               # 95% confidence
+z_crit <- qnorm(1 - alpha/2)                 # Normal critical point
+t_crit <- qt(1 - alpha/2, df = n - 1)        # Student's t critical point
+
+ci_normal <- c(xbar - z_crit * se, xbar + z_crit * se)
+ci_t      <- c(xbar - t_crit * se, xbar + t_crit * se)
+\end{configbox}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$n$ & $\bar{x}$ (ms) & $s$ (ms) & $s/\sqrt{n}$ (ms) & Critical value & 95\% CI (ms) \\
+\hline
+10 & 317.70 & 2.98 & 0.94 & $z = 1.960$ (Normal) & $[315.85,\ 319.55]$ \\
+10 & 317.70 & 2.98 & 0.94 & $t_{9} = 2.262$ (Student) & $[315.57,\ 319.83]$ \\
+\hline
+\end{tabular}
+\caption{95\% confidence intervals for the average RTT using the Normal and Student's $t$ distributions.}
+\label{tab:ex10_results}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{../images/E10_CI.pdf}
+    \caption{RTT samples and the two 95\% confidence intervals (dashed line: sample mean).}
+    \label{fig:ex10_ci}
+\end{figure}
+
+\textbf{Conclusion:} As shown in Table~\ref{tab:ex10_results} and Figure~\ref{fig:ex10_ci}, the Student's $t$ interval is wider than the Normal one (4.27~ms versus 3.70~ms), since $t_{9}=2.262 > z=1.960$. The Normal interval treats $s$ as if it were the true population standard deviation, which is only reasonable for large samples. With $n=10$, $s$ is itself a noisy estimate, and the $t$ distribution compensates for this extra uncertainty with heavier tails; the difference vanishes as $n$ grows. The Normal interval is therefore too optimistic and would cover the true mean less than 95\% of the time, so we prefer the Student's $t$ interval. In this run the RTTs are very stable: eight of the ten lie between 316 and 317~ms, with two higher values (321 and 325~ms) pulling the mean slightly above the cluster. As a result $s$ is small and both intervals are narrow, differing by less than 0.3~ms at each end. The data are not Normal (they are skewed to the right), and since the $t$ interval assumes approximately Normal data, it should be interpreted with some caution; this is investigated in Exercise 11, which assesses the actual coverage of these intervals.
+
 \subsection{Exercise 11}
 
 % ======================================================================

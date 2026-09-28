@@ -1,5 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1790611194.13456 "/home/ataid_jo/DDRS/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 1/report/report.tex" "report.pdf" "report" 1790611195.11083 0
+["pdflatex"] 1790614413.94714 "/home/ataid_jo/DDRS/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 1/report/report.tex" "report.pdf" "report" 1790614415.02824 0
+  "../images/E10_CI.pdf" 1790614315.35284 4687 d74c6d4dc9ac26a19ad3ec72ca1aa407 ""
   "../images/E12_delay_runs.pdf" 1790610893.94889 5531 822fa9498f384f15c53e758d3b05924f ""
   "../images/E13_initial_conditions.pdf" 1790610893.94889 5317 5ba4aa7bc05e2d433348ca5814381c64 ""
   "../images/E14_repdel_analysis.pdf" 1790610893.95288 6426 b7c0009dfa188c66a4f2fe70bbbe31f5 ""
@@ -11,8 +12,9 @@
   "../images/E5_Console.png" 1789602486.52456 62563 951b1cde7a5d8064ca4bd08bbd7d4b3d ""
   "../images/E9_packet_sizes.pdf" 1790603199.85403 5557 3cab90ca1c5540326e33e70b1f038d03 ""
   "../images/IST_A.png" 1789498934.15243 57556 13acfcbf04b8e16bd9840de19700b10c ""
+  "../images/ping RTTs.png" 1790614197.47825 127241 940d5f49f24c8329806f5792cfe149b1 ""
   "/etc/texmf/web2c/texmf.cnf" 1777045507.75276 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/ataid_jo/DDRS/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 1/report/report.tex" 1790611193.96278 39753 768f144f63112544dcbccd732e9c917b ""
+  "/home/ataid_jo/DDRS/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 1/report/report.tex" 1790614412.51983 43349 b82efab537ffd92594bf2d593020688d ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1136768653 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tctt1095.tfm" 1136768653 1536 52374f37d7a013fe5a15c958e7ebe485 ""
@@ -242,11 +244,11 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1777045531.67963 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1777045637 8213238 f7f1ddc7879e0990d63469a7d38238bc ""
-  "report.aux" 1790611195.04175 9558 31b8a5649c5b693a877bb2685879410f "pdflatex"
-  "report.listing" 1790611195.01943 107 799b40673a80c0bbe2dbe1f8d50bdadf "pdflatex"
-  "report.out" 1790611195.04175 3121 379fdd4da7774f241724a5e5f5dc7bfe "pdflatex"
-  "report.tex" 1790611193.96278 39753 768f144f63112544dcbccd732e9c917b ""
-  "report.toc" 1790611195.04175 1785 56128cb086df38148730209d7f124eee "pdflatex"
+  "report.aux" 1790614414.95472 10526 75889b635ada28438be00fe399218538 "pdflatex"
+  "report.listing" 1790614414.93235 107 799b40673a80c0bbe2dbe1f8d50bdadf "pdflatex"
+  "report.out" 1790614414.95472 3121 379fdd4da7774f241724a5e5f5dc7bfe "pdflatex"
+  "report.tex" 1790614412.51983 43349 b82efab537ffd92594bf2d593020688d ""
+  "report.toc" 1790614414.95472 1785 d7a528e2456a7a7ffec7f299b38aaa6a "pdflatex"
   (generated)
   "report.aux"
   "report.listing"
