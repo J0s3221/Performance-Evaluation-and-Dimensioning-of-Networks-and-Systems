@@ -582,9 +582,146 @@ Download & 1,023,788 & 514 & 1,023,274 & 1121.06 & 1304 \\
 
 \subsection{Exercise 12}
 
+\textbf{Objective:} Assess the variability of the M/M/1 average queue-delay estimate by running the simulator ten times, with 1000 completed customers per run and traffic intensity $\rho=\lambda/\mu=0.8$, and determine whether a single simulation is sufficient to draw conclusions.
+
+\textbf{Approach:} The M/M/1 event-driven simulator from Annex A was executed independently ten times. We chose $\lambda=0.8$ and $\mu=1$, which gives $\rho=0.8$. For each run, the average queue delay was calculated as the total time customers spent waiting in the queue divided by the number of completed customers; customers who entered service immediately contribute zero waiting time to the average. A fixed random seed (12) makes the experiment reproducible. The simulation loop was repeated as follows:
+
+\begin{configbox}
+set.seed(12)
+queue_delay_estimates <- replicate(
+    10,
+    simulate_mm1_queue_delay(
+        arrival_rate = 0.8,
+        service_rate = 1,
+        completed_customers = 1000
+    )
+)
+\end{configbox}
+
+The theoretical steady-state average queue delay is
+\[
+W_Q = \frac{\lambda}{\mu(\mu-\lambda)}
+        = \frac{0.8}{1(1-0.8)} = 4.
+\]
+The ten simulation estimates are shown in Table~\ref{tab:ex12_runs}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c||c|c|}
+\hline
+Run & $W_Q$ estimate & Run & $W_Q$ estimate \\
+\hline
+1 & 2.7210 & 6 & 2.3488 \\
+2 & 5.7114 & 7 & 4.3678 \\
+3 & 2.7891 & 8 & 3.5047 \\
+4 & 3.7936 & 9 & 2.4763 \\
+5 & 2.7548 & 10 & 3.9490 \\
+\hline
+\end{tabular}
+\caption{Average queue-delay estimates from ten independent M/M/1 simulation runs (1000 completed customers per run).}
+\label{tab:ex12_runs}
+\end{table}
+
+Across the ten replications, the sample mean was 3.4417 and the sample standard deviation was 1.0508. The estimates ranged from 2.3488 to 5.7114. A 95\% Student's $t$ confidence interval for the mean across replications was $[2.6899,\,4.1934]$, which contains the theoretical value $W_Q=4$.
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.78\textwidth]{../scripts/E12_delay_runs.pdf}
+        \caption{Average queue-delay estimate in each of the ten M/M/1 runs. The dashed line marks the theoretical value $W_Q=4$.}
+        \label{fig:ex12_runs}
+\end{figure}
+
+\textbf{Conclusion:} The estimates differ noticeably from run to run even though each run processes 1000 completed customers. In this experiment they range from approximately 2.35 to 5.71, so one run is not sufficient to characterize the estimator's variability or to make a robust conclusion from a single observed value. The mean of the ten estimates is below the theoretical value, but the 95\% confidence interval across replications includes 4, which is consistent with the theoretical result at this confidence level. More independent replications, or longer runs, would provide a more precise assessment; this single set of ten runs illustrates why replication is important.
+
 \subsection{Exercise 13}
 
+\textbf{Objective:} Evaluate how the initial number of customers in an M/M/1 system affects estimates of the average delay in queue. Twenty-five independent runs were performed for each combination of run length (20 or 2000 completed customers) and initial population (0 or 10 customers), with $\lambda=3$ and $\mu=4$.
+
+\textbf{Approach:} Each run used the event-driven M/M/1 simulator. With ten customers initially in the system, one customer starts in service and nine are waiting in the queue; their initial arrival times are set to time zero. Thus, their waiting times are measured from the start of the simulation. The run stops after the specified number of completed customers, and the average queue delay is calculated over those completed customers. The supplied \texttt{initcond.R} helper was not present in the repository, so the script initializes this state directly. The four experimental conditions were generated as follows:
+
+\begin{configbox}
+run_results <- expand.grid(
+    run = 1:25,
+    run_length = c(20, 2000),
+    initial_clients = c(0, 10)
+)
+\end{configbox}
+
+For $\rho=\lambda/\mu=0.75$, the theoretical steady-state mean delay in queue is
+\[
+W_Q = \frac{\lambda}{\mu(\mu-\lambda)}
+        = \frac{3}{4(4-3)} = 0.75.
+\]
+Table~\ref{tab:ex13_initial_conditions} reports the mean of the 25 simulation estimates for each condition and the corresponding 95\% Student's $t$ confidence interval across replications.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|r|c|}
+\hline
+Completed customers & Initial customers & Mean $W_Q$ & 95\% confidence interval \\
+\hline
+20 & 0 & 0.4637 & $[0.2697,\,0.6578]$ \\
+20 & 10 & 1.4241 & $[1.2124,\,1.6357]$ \\
+2000 & 0 & 0.7159 & $[0.6633,\,0.7684]$ \\
+2000 & 10 & 0.7373 & $[0.6765,\,0.7980]$ \\
+\hline
+\end{tabular}
+\caption{M/M/1 average queue-delay estimates over 25 runs per condition ($\lambda=3$, $\mu=4$).}
+\label{tab:ex13_initial_conditions}
+\end{table}
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.88\textwidth]{../scripts/E13_initial_conditions.pdf}
+        \caption{Distribution of the 25 average queue-delay estimates for each run length and initial condition. The dashed line marks the theoretical value $W_Q=0.75$.}
+        \label{fig:ex13_initial_conditions}
+\end{figure}
+
+\textbf{Conclusion:} The initial condition has a pronounced effect when only 20 customers are used. Starting empty produces a mean estimate below steady state (0.4637), while starting with ten customers produces a much higher estimate (1.4241), because the initial backlog contributes large waiting times. Neither 95\% interval includes the theoretical value 0.75. With 2000 completed customers, the estimates are much closer to theory (0.7159 and 0.7373), and both intervals include 0.75. This indicates that a longer run reduces the relative influence of the initial transient, while short runs can give strongly biased estimates depending on the initial state.
+
 \subsection{Exercise 14}
+
+\textbf{Objective:} Study how the number of independent replications required to estimate the M/M/1 average queue delay depends on the target relative error, the number of measured delays per replication, and the traffic intensity $\rho=\lambda/\mu$.
+
+\textbf{Approach:} The provided \texttt{repdel.R} file was not present in the repository, so a self-contained equivalent of \texttt{frepdel()} was implemented. For every replication, the first 10000 queue delays were discarded to reduce the empty-system initialization transient; the estimate was then calculated from either 100 or 1000 subsequent completed customers. Starting with ten replications, independent replications were added until the relative half-width of the 95\% Student's $t$ confidence interval satisfied the target:
+\[
+\frac{t_{0.975,R-1}\,s_R}{\sqrt{R}\,|\bar{W}_{Q,R}|} \leq e,
+\]
+where $R$ is the number of replications, $s_R$ is the sample standard deviation of the replication estimates, and $e$ is the requested relative error. We used $\mu=1$, $\rho\in\{0.50,0.80,0.95\}$, measured sample sizes $n\in\{100,1000\}$, and target errors $e\in\{5\%,10\%,20\%\}$. The theoretical mean and variance of one steady-state M/M/1 queue delay are
+\[
+E[W_Q]=\frac{\rho}{\mu-\lambda}, \qquad
+\operatorname{Var}(W_Q)=\frac{\rho(2-\rho)}{(\mu-\lambda)^2}.
+\]
+For $\mu=1$, the theoretical variances are 3, 24, and 399 for $\rho=0.50$, 0.80, and 0.95, respectively. Figure~\ref{fig:ex14_repdel} shows both this increase and the observed replication requirements.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+$\rho$ & Delays per replication & $e=5\%$ & $e=10\%$ & $e=20\%$ \\
+\hline
+0.50 & 100 & 406 & 101 & 34 \\
+0.80 & 100 & 1013 & 223 & 59 \\
+0.95 & 100 & 1643 & 417 & 93 \\
+\hline
+0.50 & 1000 & 44 & 18 & 10 \\
+0.80 & 1000 & 180 & 14 & 10 \\
+0.95 & 1000 & 1059 & 208 & 45 \\
+\hline
+\end{tabular}
+\caption{Number of replications required to reach each relative-error target using a 95\% confidence interval. At least ten replications were used in every case.}
+\label{tab:ex14_repdel}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{../scripts/E14_repdel_analysis.pdf}
+    \caption{Theoretical queue-delay variance and observed replication requirements as functions of $\rho$, for two measured sample sizes.}
+    \label{fig:ex14_repdel}
+\end{figure}
+
+\textbf{Conclusion:} The required number of replications increases as the relative-error target becomes stricter. Increasing the number of measured delays per replication generally reduces the required number of replications, since each replication estimate is more precise. The required count also rises sharply as $\rho$ approaches one; for example, with 100 measured delays and a 5\% target, it increases from 406 at $\rho=0.50$ to 1643 at $\rho=0.95$. This is consistent with the strong increase in queue-delay variance near saturation. The results therefore show that both the desired precision and system load must be considered when choosing the number of replications. Counts are specific to the stated seed, warm-up deletion, and tested grid; they are simulation estimates rather than universal constants.
 
 % ======================================================================
 \section{Conclusion}

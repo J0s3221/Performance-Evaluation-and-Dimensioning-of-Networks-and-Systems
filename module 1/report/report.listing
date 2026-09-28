@@ -1,6 +1,5 @@
-packet_sizes <- as.numeric(capture$Length)
-packet_sizes <- packet_sizes[!is.na(packet_sizes) & packet_sizes >= 0]
-packet_sizes <- packet_sizes[packet_sizes <= 1500]
-
-mean(packet_sizes)
-median(packet_sizes)
+run_results <- expand.grid(
+    run = 1:25,
+    run_length = c(20, 2000),
+    initial_clients = c(0, 10)
+)

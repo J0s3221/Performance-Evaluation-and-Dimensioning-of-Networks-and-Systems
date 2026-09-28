@@ -18,6 +18,6 @@
 \contentsline {subsection}{\numberline {6.3}Exercise 11}{17}{subsection.6.3}%
 \contentsline {section}{\numberline {7}F. Output data analysis}{17}{section.7}%
 \contentsline {subsection}{\numberline {7.1}Exercise 12}{17}{subsection.7.1}%
-\contentsline {subsection}{\numberline {7.2}Exercise 13}{17}{subsection.7.2}%
-\contentsline {subsection}{\numberline {7.3}Exercise 14}{17}{subsection.7.3}%
-\contentsline {section}{\numberline {8}Conclusion}{17}{section.8}%
+\contentsline {subsection}{\numberline {7.2}Exercise 13}{18}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Exercise 14}{20}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Conclusion}{22}{section.8}%
