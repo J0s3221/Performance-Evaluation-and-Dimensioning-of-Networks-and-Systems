@@ -531,6 +531,47 @@ Simulation probability & Exact probability & Absolute error \\
 
 \subsection{Exercise 9}
 
+\textbf{Objective:} Analyze and compare the packet-size distributions recorded in the Wireshark captures for video, download, and normal-state network activity.
+
+\textbf{Approach:} Packet sizes were read from the Wireshark CSV \texttt{Length} field. For each valid capture, missing or negative values were discarded, and packets larger than 1500 bytes were excluded. This threshold is the analysis cutoff used by the script; unusually large records can result from offloading or capture artifacts, although the cutoff may also exclude large legitimate frames depending on what the capture's \texttt{Length} field counts. The same 50-byte histogram bins and 0--1500-byte horizontal scale were used for all captures. The main statistics were computed as follows:
+
+\begin{configbox}
+packet_sizes <- as.numeric(capture$Length)
+packet_sizes <- packet_sizes[!is.na(packet_sizes) & packet_sizes >= 0]
+packet_sizes <- packet_sizes[packet_sizes <= 1500]
+
+mean(packet_sizes)
+median(packet_sizes)
+\end{configbox}
+
+The results for all three captures are summarized in Table~\ref{tab:ex9_packet_sizes}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|r|r|r|r|r|}
+\hline
+Capture & Read & Excluded & Analyzed & Mean (bytes) & Median (bytes) \\
+\hline
+Video & 1,820 & 4 & 1,816 & 641.37 & 477.5 \\
+\hline
+Normal state & 53,106 & 191 & 52,915 & 341.01 & 328 \\
+\hline
+Download & 1,023,788 & 514 & 1,023,274 & 1121.06 & 1304 \\
+\hline
+\end{tabular}
+\caption{Packet-size statistics after excluding records larger than 1500 bytes.}
+\label{tab:ex9_packet_sizes}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{../scripts/E9_packet_sizes.pdf}
+    \caption{Packet-size histograms for the video, download, and normal-state captures, using common 50-byte bins.}
+    \label{fig:ex9_packet_sizes}
+\end{figure}
+
+\textbf{Conclusion:} The download capture has the largest packet sizes among the three samples, with a mean of 1121.06 bytes and a median of 1304 bytes. Video traffic is intermediate (mean 641.37 bytes; median 477.5 bytes), while normal-state traffic has the smallest values (mean 341.01 bytes; median 328 bytes). The download median exceeds its mean, unlike the other two captures, indicating that smaller observations pull its average downward even though at least half of its analyzed packets are 1304 bytes or larger. The results characterize these particular captures and do not, by themselves, establish a causal relationship between the activity and packet size.
+
 \subsection{Exercise 10}
 
 \subsection{Exercise 11}

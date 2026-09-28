@@ -1,16 +1,6 @@
-p_head <- 0.7
-n_coins <- 5
-n_experiments <- 1000
+packet_sizes <- as.numeric(capture$Length)
+packet_sizes <- packet_sizes[!is.na(packet_sizes) & packet_sizes >= 0]
+packet_sizes <- packet_sizes[packet_sizes <= 1500]
 
-set.seed(8)
-
-random_values <- matrix(
-    runif(n_experiments * n_coins),
-    nrow = n_experiments,
-    ncol = n_coins
-)
-
-coin_tosses <- random_values < p_head
-number_of_heads <- rowSums(coin_tosses)
-
-simulation_probability <- mean(number_of_heads == 2)
+mean(packet_sizes)
+median(packet_sizes)
