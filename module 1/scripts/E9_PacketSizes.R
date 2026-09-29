@@ -2,8 +2,10 @@
 # Before running this script, export each capture as CSV from Wireshark.
 # Resolve the script path when sourced; RStudio's Run button may execute lines
 # without providing it, so fall back to locating the project from the working directory.
-script_path <- tryCatch(sys.frames()[[1]]$ofile, error = function(e) NULL)
-if (!is.null(script_path) && nzchar(script_path)) {
+
+# Folder-Finding block
+script_path <- tryCatch(sys.frames()[[1]]$ofile, error = function(e) NULL)        # Try to find where the script is saved
+if (!is.null(script_path) && nzchar(script_path)) {                               # Branch depending on whether the path was found
   script_dir <- dirname(normalizePath(script_path, winslash = "/"))
   capture_dir <- normalizePath(
     file.path(script_dir, "..", "captures"),
@@ -31,6 +33,7 @@ if (!is.null(script_path) && nzchar(script_path)) {
   }
 }
 
+# Checking that the capture folder exists
 if (is.na(capture_dir) || !dir.exists(capture_dir)) {
   stop(
     "Capture folder not found. Expected 'module 1/captures' relative to the project. ",
@@ -38,6 +41,7 @@ if (is.na(capture_dir) || !dir.exists(capture_dir)) {
   )
 }
 
+# Defining the CSV file paths
 csv_files <- c(
   video = file.path(capture_dir, "capture_video.csv"),
   download = file.path(capture_dir, "capture_download.csv"),
@@ -80,6 +84,8 @@ is_git_lfs_pointer <- function(file_name) {
 }
 
 read_packet_sizes <- function(file_name) {
+
+  # Guard checks
   if (!file.exists(file_name)) {
     warning(
       "Skipping missing capture: ", file_name,
@@ -88,6 +94,7 @@ read_packet_sizes <- function(file_name) {
     return(NULL)
   }
 
+  # Guard checks
   if (is_git_lfs_pointer(file_name)) {
     warning(
       "Skipping Git LFS pointer file: ", file_name,
@@ -96,7 +103,7 @@ read_packet_sizes <- function(file_name) {
     return(NULL)
   }
 
-  data <- read.csv(file_name, check.names = FALSE, stringsAsFactors = FALSE)
+  data <- read.csv(file_name, check.names = FALSE, stringsAsFactors = FALSE)          # Reading and cleaning
   length_column <- find_length_column(data)
   packet_sizes <- suppressWarnings(as.numeric(data[[length_column]]))
   packet_sizes <- packet_sizes[!is.na(packet_sizes) & packet_sizes >= 0]
@@ -106,6 +113,7 @@ read_packet_sizes <- function(file_name) {
     return(NULL)
   }
 
+  # Filtering and reporting
   total_packets <- length(packet_sizes)
   removed_packets <- sum(packet_sizes > maximum_packet_size)
   packet_sizes <- packet_sizes[packet_sizes <= maximum_packet_size]
