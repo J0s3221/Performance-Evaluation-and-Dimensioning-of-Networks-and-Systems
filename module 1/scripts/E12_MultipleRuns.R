@@ -7,11 +7,25 @@ completed_customers <- 1000
 number_of_runs <- 10
 random_seed <- 12
 
+script_path <- tryCatch(sys.frames()[[1]]$ofile, error = function(e) NULL)
+if (!is.null(script_path) && nzchar(script_path)) {
+  script_dir <- dirname(normalizePath(script_path, winslash = "/"))
+} else {
+  roots <- unique(c(normalizePath(getwd(), winslash = "/"), dirname(normalizePath(getwd(), winslash = "/"))))
+  script_candidates <- c(file.path(roots, "module 1", "scripts"), file.path(roots, "scripts"))
+  script_candidates <- script_candidates[dir.exists(script_candidates)]
+  if (!length(script_candidates)) stop("Could not locate the module 1/scripts directory.")
+  script_dir <- script_candidates[1]
+}
+
+# Parameterized equivalent of the event-driven algorithm in scripts_helper/mm1.R.
 simulate_mm1_queue_delay <- function(arrival_rate, service_rate, completed_customers) {
   time <- 0
   completed <- 0
   server_busy <- FALSE
   queue_arrival_times <- numeric(0)
+  queue_head <- 1
+  queue_tail <- 0
   accumulated_queue_delay <- 0
   event_times <- c(rexp(1, rate = arrival_rate), Inf)
 
@@ -21,24 +35,25 @@ simulate_mm1_queue_delay <- function(arrival_rate, service_rate, completed_custo
 
     if (next_event == 1) {
       event_times[1] <- time + rexp(1, rate = arrival_rate)
-
       if (server_busy) {
-        queue_arrival_times <- c(queue_arrival_times, time)
+        queue_tail <- queue_tail + 1
+        if (queue_tail > length(queue_arrival_times)) {
+          length(queue_arrival_times) <- max(1024, 2 * length(queue_arrival_times))
+        }
+        queue_arrival_times[queue_tail] <- time
       } else {
         server_busy <- TRUE
         event_times[2] <- time + rexp(1, rate = service_rate)
+        completed <- completed + 1
       }
-    } else {
+    } else if (queue_head <= queue_tail) {
+      accumulated_queue_delay <- accumulated_queue_delay + time - queue_arrival_times[queue_head]
+      queue_head <- queue_head + 1
+      event_times[2] <- time + rexp(1, rate = service_rate)
       completed <- completed + 1
-
-      if (length(queue_arrival_times) == 0) {
-        server_busy <- FALSE
-        event_times[2] <- Inf
-      } else {
-        accumulated_queue_delay <- accumulated_queue_delay + time - queue_arrival_times[1]
-        queue_arrival_times <- queue_arrival_times[-1]
-        event_times[2] <- time + rexp(1, rate = service_rate)
-      }
+    } else {
+      server_busy <- FALSE
+      event_times[2] <- Inf
     }
   }
 
@@ -77,23 +92,6 @@ cat("Maximum across runs:", round(max(queue_delay_estimates), 4), "\n")
 cat("95% Student's t CI for the mean across runs: [",
   round(replication_ci[1], 4), ", ", round(replication_ci[2], 4), "]\n", sep = "")
 cat("Theoretical M/M/1 average queue delay:", round(theoretical_queue_delay, 4), "\n")
-
-script_path <- tryCatch(sys.frames()[[1]]$ofile, error = function(e) NULL)
-if (!is.null(script_path) && nzchar(script_path)) {
-  script_dir <- dirname(normalizePath(script_path, winslash = "/"))
-} else {
-  search_roots <- unique(c(
-    normalizePath(getwd(), winslash = "/"),
-    list.dirs(getwd(), recursive = FALSE, full.names = TRUE),
-    dirname(normalizePath(getwd(), winslash = "/"))
-  ))
-  possible_output_dirs <- c(
-    file.path(search_roots, "module 1", "scripts"),
-    file.path(search_roots, "scripts")
-  )
-  existing_output_dirs <- possible_output_dirs[dir.exists(possible_output_dirs)]
-  script_dir <- if (length(existing_output_dirs)) existing_output_dirs[1] else getwd()
-}
 
 pdf(file.path(script_dir, "E12_delay_runs.pdf"), width = 8, height = 5)
 par(mar = c(5, 5, 3, 1))

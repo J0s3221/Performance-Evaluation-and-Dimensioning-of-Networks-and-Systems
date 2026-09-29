@@ -1,5 +1,4 @@
-run_results <- expand.grid(
-    run = 1:25,
-    run_length = c(20, 2000),
-    initial_clients = c(0, 10)
+fmm1_initcond(
+    ArrivalRate = 3, ServiceRate = 4,
+    NumEndClients = 20, InitClients = 10
 )
