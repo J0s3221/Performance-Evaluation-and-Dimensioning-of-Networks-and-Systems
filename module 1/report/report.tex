@@ -534,15 +534,48 @@ Simulation probability & Exact probability & Absolute error \\
 
 \textbf{Objective:} Analyze and compare the packet-size distributions recorded in the Wireshark captures for video, download, and normal-state network activity.
 
-\textbf{Approach:} Packet sizes were read from the Wireshark CSV \texttt{Length} field. For each valid capture, missing or negative values were discarded, and packets larger than 1500 bytes were excluded. This threshold is the analysis cutoff used by the script; unusually large records can result from offloading or capture artifacts, although the cutoff may also exclude large legitimate frames depending on what the capture's \texttt{Length} field counts. The same 50-byte histogram bins and 0--1500-byte horizontal scale were used for all captures. The main statistics were computed as follows:
+\textbf{Approach:} Traffic was captured with Wireshark in three scenarios -- watching a video on YouTube, downloading a large file, and an idle ("normal state") system -- and each capture was exported to CSV via Wireshark's Export Packet Dissections option. For each capture, packet sizes were read from the \texttt{Length} field, missing or negative values were discarded, and packets larger than 1500 bytes were excluded; such values are attributed to TCP Segmentation Offload rather than genuine on-wire packet sizes, since 1500 bytes is the maximum payload of a standard Ethernet frame. The same 50-byte histogram bins and 0--1500-byte horizontal scale were used for all three captures, to make them directly comparable.
 
 \begin{configbox}
-packet_sizes <- as.numeric(capture$Length)
-packet_sizes <- packet_sizes[!is.na(packet_sizes) & packet_sizes >= 0]
-packet_sizes <- packet_sizes[packet_sizes <= 1500]
+maximum_packet_size <- 1500   # packets above this are excluded (TCP Segmentation Offload)
 
-mean(packet_sizes)
-median(packet_sizes)
+csv_files <- c(
+  video        = "captures/capture_video.csv",
+  download     = "captures/capture_download.csv",
+  normal_state = "captures/capture_normal_state.csv"
+)
+
+read_packet_sizes <- function(file_name) {
+  data <- read.csv(file_name)
+  packet_sizes <- as.numeric(data$Length)
+  packet_sizes <- packet_sizes[!is.na(packet_sizes) & packet_sizes >= 0]
+
+  total    <- length(packet_sizes)
+  packet_sizes <- packet_sizes[packet_sizes <= maximum_packet_size]
+  excluded <- total - length(packet_sizes)
+
+  cat("\nFile:", file_name, "\n")
+  cat("Packets read:", total, "| Excluded:", excluded,
+      "| Analyzed:", length(packet_sizes), "\n")
+  cat("Mean:", round(mean(packet_sizes), 2),
+      "bytes | Median:", median(packet_sizes), "bytes\n")
+
+  packet_sizes
+}
+
+packet_sizes <- lapply(csv_files, read_packet_sizes)
+
+pdf("E9_packet_sizes.pdf", width = 9, height = 10)
+par(mfrow = c(length(packet_sizes), 1), mar = c(4, 4, 3, 1))
+for (name in names(packet_sizes)) {
+  hist(packet_sizes[[name]],
+       breaks = seq(0, maximum_packet_size, by = 50),
+       xlim = c(0, maximum_packet_size),
+       main = paste("Packet sizes -", gsub("_", " ", name)),
+       xlab = "Packet size (bytes)", ylab = "Frequency",
+       col = "lightblue", border = "white")
+}
+dev.off()
 \end{configbox}
 
 The results for all three captures are summarized in Table~\ref{tab:ex9_packet_sizes}.
@@ -553,11 +586,11 @@ The results for all three captures are summarized in Table~\ref{tab:ex9_packet_s
 \hline
 Capture & Read & Excluded & Analyzed & Mean (bytes) & Median (bytes) \\
 \hline
-Video & 1,820 & 4 & 1,816 & 641.37 & 477.5 \\
-\hline
-Normal state & 53,106 & 191 & 52,915 & 341.01 & 328 \\
+Video & 37,072 & 0 & 37,072 & 1088.96 & 1292 \\
 \hline
 Download & 1,023,788 & 514 & 1,023,274 & 1121.06 & 1304 \\
+\hline
+Normal state & 53,106 & 191 & 52,915 & 341.01 & 328 \\
 \hline
 \end{tabular}
 \caption{Packet-size statistics after excluding records larger than 1500 bytes.}
@@ -571,7 +604,7 @@ Download & 1,023,788 & 514 & 1,023,274 & 1121.06 & 1304 \\
     \label{fig:ex9_packet_sizes}
 \end{figure}
 
-\textbf{Conclusion:} The download capture has the largest packet sizes among the three samples, with a mean of 1121.06 bytes and a median of 1304 bytes. Video traffic is intermediate (mean 641.37 bytes; median 477.5 bytes), while normal-state traffic has the smallest values (mean 341.01 bytes; median 328 bytes). The download median exceeds its mean, unlike the other two captures, indicating that smaller observations pull its average downward even though at least half of its analyzed packets are 1304 bytes or larger. The results characterize these particular captures and do not, by themselves, establish a causal relationship between the activity and packet size.
+\textbf{Conclusion:} As shown in Table~\ref{tab:ex9_packet_sizes} and Figure~\ref{fig:ex9_packet_sizes}, video and download traffic have very similar packet-size profiles, both dominated by large packets close to 1500 bytes (mean 1088.96 and 1121.06 bytes; median 1292 and 1304 bytes, respectively), while normal-state traffic is dominated by small packets (mean 341.01 bytes; median 328 bytes). This is consistent with the nature of each activity: both video streaming and file downloading are bulk data transfers, where the sender maximizes throughput by filling each packet close to the network's maximum transmission unit, so most packets are large. Normal-state (idle) traffic, in contrast, consists mostly of small control and background messages -- e.g., keep-alives, DNS queries, ACKs -- with no bulk payload to carry, which explains its much smaller packet sizes. For all three captures the median is close to the mean, indicating a fairly concentrated (not strongly skewed) distribution around the typical packet size for that type of traffic, as also visible in Figure~\ref{fig:ex9_packet_sizes}, where video and download both show a strong peak near 1500 bytes and normal-state shows its mass concentrated well below 500 bytes. As with any observational capture, these results characterize these particular sessions and do not, by themselves, establish a causal relationship between the activity type and packet size.
 
 \subsection{Exercise 10}
 
@@ -743,7 +776,7 @@ Across the ten replications, the sample mean was 3.3717 and the sample standard 
 
 \begin{figure}[H]
         \centering
-        \includegraphics[width=0.78\textwidth]{../scripts/E12_delay_runs.pdf}
+        \includegraphics[width=0.78\textwidth]{../images/E12_delay_runs.pdf}
         \caption{Average queue-delay estimate in each of the ten M/M/1 runs. The dashed line marks the theoretical value $W_Q=4$.}
         \label{fig:ex12_runs}
 \end{figure}
@@ -788,7 +821,7 @@ Completed customers & Initial customers & Mean $W_Q$ & 95\% confidence interval 
 
 \begin{figure}[H]
         \centering
-        \includegraphics[width=0.88\textwidth]{../scripts/E13_initial_conditions.pdf}
+        \includegraphics[width=0.88\textwidth]{../images/E13_initial_conditions.pdf}
         \caption{Distribution of the 25 average queue-delay estimates for each run length and initial condition. The dashed line marks the theoretical value $W_Q=0.75$.}
         \label{fig:ex13_initial_conditions}
 \end{figure}
@@ -832,7 +865,7 @@ $\rho$ & Delays per replication & $\gamma=5\%$ & $\gamma=10\%$ & $\gamma=20\%$ \
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.82\textwidth]{../scripts/E14_repdel_analysis.pdf}
+    \includegraphics[width=0.82\textwidth]{../images/E14_repdel_analysis.pdf}
     \caption{Theoretical queue-delay variance and observed replication requirements as functions of $\rho$, for two measured sample sizes.}
     \label{fig:ex14_repdel}
 \end{figure}

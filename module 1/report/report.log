@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.24)  30 SEP 2026 10:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.24)  30 SEP 2026 14:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -869,66 +869,67 @@ Overfull \hbox (34.68758pt too wide) in paragraph at lines 366--380
  (./report.listing) [11] [12]
 \openout6 = `report.listing'.
 
- (./report.listing) [13]
+ (./report.listing) [13] [14]
 \openout6 = `report.listing'.
 
  (./report.listing
-LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 1.
+LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 11.
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
-)) [14]
-<../images/E9_packet_sizes.pdf, id=439, 650.43pt x 722.7pt>
+)) [15]
+<../images/E9_packet_sizes.pdf, id=485, 650.43pt x 722.7pt>
 File: ../images/E9_packet_sizes.pdf Graphic file (type pdf)
 <use ../images/E9_packet_sizes.pdf>
-Package pdftex.def Info: ../images/E9_packet_sizes.pdf  used on input line 569.
+Package pdftex.def Info: ../images/E9_packet_sizes.pdf  used on input line 602.
 (pdftex.def)             Requested size: 396.63496pt x 440.71402pt.
- [15] [16 <../images/E9_packet_sizes.pdf>]
-<../images/ping RTTs.png, id=465, 796.9775pt x 260.975pt>
+ [16 <../images/E9_packet_sizes.pdf>]
+<../images/ping RTTs.png, id=501, 796.9775pt x 260.975pt>
 File: ../images/ping RTTs.png Graphic file (type png)
 <use ../images/ping RTTs.png>
-Package pdftex.def Info: ../images/ping RTTs.png  used on input line 584.
+Package pdftex.def Info: ../images/ping RTTs.png  used on input line 617.
 (pdftex.def)             Requested size: 483.69687pt x 158.39012pt.
 \openout6 = `report.listing'.
 
  (./report.listing) [17 <../images/ping RTTs.png>]
-<../images/E10_CI.pdf, id=486, 505.89pt x 230.8625pt>
+<../images/E10_CI.pdf, id=508, 505.89pt x 230.8625pt>
 File: ../images/E10_CI.pdf Graphic file (type pdf)
 <use ../images/E10_CI.pdf>
-Package pdftex.def Info: ../images/E10_CI.pdf  used on input line 621.
+Package pdftex.def Info: ../images/E10_CI.pdf  used on input line 654.
 (pdftex.def)             Requested size: 362.77264pt x 165.55507pt.
+ [18 <../images/E10_CI.pdf>]
 \openout6 = `report.listing'.
 
- (./report.listing) [18 <../images/E10_CI.pdf>] [19]
-<../images/E11_Coverage.pdf, id=542, 505.89pt x 289.08pt>
+ (./report.listing) [19]
+<../images/E11_Coverage.pdf, id=543, 505.89pt x 289.08pt>
 File: ../images/E11_Coverage.pdf Graphic file (type pdf)
 <use ../images/E11_Coverage.pdf>
-Package pdftex.def Info: ../images/E11_Coverage.pdf  used on input line 689.
+Package pdftex.def Info: ../images/E11_Coverage.pdf  used on input line 722.
 (pdftex.def)             Requested size: 386.95897pt x 221.12341pt.
- [20 <../images/E11_Coverage.pdf>]
+ [20] [21 <../images/E11_Coverage.pdf>]
 \openout6 = `report.listing'.
 
  (./report.listing)
-<../scripts/E12_delay_runs.pdf, id=557, 578.16pt x 361.35pt>
-File: ../scripts/E12_delay_runs.pdf Graphic file (type pdf)
-<use ../scripts/E12_delay_runs.pdf>
-Package pdftex.def Info: ../scripts/E12_delay_runs.pdf  used on input line 746.
+<../images/E12_delay_runs.pdf, id=597, 578.16pt x 361.35pt>
+File: ../images/E12_delay_runs.pdf Graphic file (type pdf)
+<use ../images/E12_delay_runs.pdf>
+Package pdftex.def Info: ../images/E12_delay_runs.pdf  used on input line 779.
 (pdftex.def)             Requested size: 377.28296pt x 235.80103pt.
- [21]
+ [22]
 \openout6 = `report.listing'.
 
- (./report.listing) [22 <../scripts/E12_delay_runs.pdf>]
-<../scripts/E13_initial_conditions.pdf, id=590, 650.43pt x 397.485pt>
-File: ../scripts/E13_initial_conditions.pdf Graphic file (type pdf)
-<use ../scripts/E13_initial_conditions.pdf>
-Package pdftex.def Info: ../scripts/E13_initial_conditions.pdf  used on input line 791.
+ (./report.listing) [23 <../images/E12_delay_runs.pdf>]
+<../images/E13_initial_conditions.pdf, id=631, 650.43pt x 397.485pt>
+File: ../images/E13_initial_conditions.pdf Graphic file (type pdf)
+<use ../images/E13_initial_conditions.pdf>
+Package pdftex.def Info: ../images/E13_initial_conditions.pdf  used on input line 824.
 (pdftex.def)             Requested size: 425.6556pt x 260.12714pt.
- [23 <../scripts/E13_initial_conditions.pdf>]
-<../scripts/E14_repdel_analysis.pdf, id=604, 722.7pt x 794.97pt>
-File: ../scripts/E14_repdel_analysis.pdf Graphic file (type pdf)
-<use ../scripts/E14_repdel_analysis.pdf>
-Package pdftex.def Info: ../scripts/E14_repdel_analysis.pdf  used on input line 835.
+ [24 <../images/E13_initial_conditions.pdf>]
+<../images/E14_repdel_analysis.pdf, id=646, 722.7pt x 794.97pt>
+File: ../images/E14_repdel_analysis.pdf Graphic file (type pdf)
+<use ../images/E14_repdel_analysis.pdf>
+Package pdftex.def Info: ../images/E14_repdel_analysis.pdf  used on input line 868.
 (pdftex.def)             Requested size: 396.63496pt x 436.30083pt.
- [24] [25 <../scripts/E14_repdel_analysis.pdf>] [26] (./report.aux)
+ [25] [26 <../images/E14_repdel_analysis.pdf>] [27] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -937,18 +938,18 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 379FDD4DA7774F241724A5E5F5DC7BFE;3121.
  ) 
 Here is how much of TeX's memory you used:
- 35685 strings out of 474222
- 749124 string characters out of 5748733
- 2169975 words of memory out of 5000000
+ 35719 strings out of 474222
+ 749635 string characters out of 5748733
+ 2171975 words of memory out of 5000000
  57077 multiletter control sequences out of 15000+600000
  571088 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  101i,13n,117p,1795b,1803s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on report.pdf (27 pages, 490330 bytes).
+Output written on report.pdf (28 pages, 494912 bytes).
 PDF statistics:
- 769 PDF objects out of 1000 (max. 8388607)
- 645 compressed objects within 7 object streams
- 295 named destinations out of 1000 (max. 500000)
+ 815 PDF objects out of 1000 (max. 8388607)
+ 690 compressed objects within 7 object streams
+ 329 named destinations out of 1000 (max. 500000)
  403 words of extra memory for PDF output out of 10000 (max. 10000000)
 
