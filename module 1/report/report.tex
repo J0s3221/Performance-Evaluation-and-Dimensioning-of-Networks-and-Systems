@@ -162,7 +162,11 @@
 \section{Introduction}
 % ======================================================================
 
-Text for the introduction here.
+This report documents the work developed for Laboratory~1 of the Performance Evaluation and Dimensioning of Networks and Systems (DDRS) course, covering the fourteen exercises proposed in the laboratory guide. The exercises progress from the fundamentals of random number generation to the construction and analysis of discrete-event simulators, and finally to statistical techniques for validating and interpreting simulation output.
+
+The report follows the same structure as the laboratory guide, organized into six parts. Part~A covers the properties of R's pseudo-random number generator. Part~B addresses the generation of random variables and stochastic processes -- Bernoulli and exponential random variables, and Poisson arrival processes -- from a uniform random number generator. Part~C develops discrete-event simulators for the M/M/1 and M/M/2 queuing systems and compares their output against the corresponding theoretical performance metrics. Part~D estimates a probability through Monte Carlo simulation. Part~E applies statistical tools -- histograms, confidence intervals, and an assessment of confidence-interval coverage -- to both real network measurements (packet captures and RTT measurements) and synthetic data. Part~F examines practical aspects of simulation output analysis: run-to-run variability, the effect of initial conditions, and the replication/deletion procedure for determining an adequate number of replications.
+
+For each exercise, the report states the objective, describes the approach and the corresponding R script, and presents the results together with a discussion of what can be concluded from them. All scripts were developed in R and executed in RStudio; network traffic was captured with Wireshark.
 
 \newpage
 
@@ -876,6 +880,18 @@ $\rho$ & Delays per replication & $\gamma=5\%$ & $\gamma=10\%$ & $\gamma=20\%$ \
 \section{Conclusion}
 % ======================================================================
 
-Text for the conclusion here.
+This laboratory work covered the full pipeline needed to build and validate a discrete-event simulator: generating random numbers and random variables, using them to drive event-driven simulation models, and applying statistical techniques to interpret the resulting output correctly.
+
+Exercises 1--2 confirmed that R's random number generator is uniformly distributed yet fully deterministic given a seed, a property essential to the reproducibility of every simulation in this report. Exercises 3--5 showed that Bernoulli, exponential, and Poisson-process samples can all be derived from this single uniform generator, with their empirical distributions matching the corresponding theoretical ones.
+
+Exercises 6--7 used these techniques to build M/M/1 and M/M/2 simulators. For stable configurations ($\rho<1$), simulated delays and utilization closely matched queuing theory, while the critically loaded case ($\rho=1$) showed that a finite simulated delay at the stability boundary does not estimate a (theoretically infinite) steady-state quantity. Comparing the two systems also illustrated the benefit of server pooling, with two parallel servers achieving lower delay than a single server of equivalent aggregate capacity.
+
+Exercise 8 demonstrated Monte Carlo estimation of a probability, converging toward the exact binomial value as expected. Exercise 9 applied similar tools to real captured traffic, showing that bulk transfers (video, downloads) produce large, near-MTU packets, while idle traffic is dominated by small control messages.
+
+Exercises 10--11 addressed the reliability of confidence intervals: the RTT measurements favored the more conservative Student's $t$ interval for small samples, and the coverage study quantified why, showing that intervals built from skewed distributions with small $n$ cover the true mean far less often than the nominal 95\% suggests, only becoming trustworthy once $n$ is large enough for the CLT approximation to hold.
+
+Finally, Exercises 12--14 examined practical challenges of output analysis. Exercise 12 showed that a single run is not sufficient to draw reliable conclusions, given substantial run-to-run variability. Exercise 13 showed that initial conditions can bias short-run estimates considerably, an effect that diminishes but does not always vanish with longer runs. Exercise 14 showed that the replications needed for a target relative error grow with traffic intensity $\rho$ and with a stricter target, reflecting the increase in queue-delay variance as the system approaches saturation.
+
+Taken together, the exercises show that a correct simulation result depends not only on a correctly implemented model, but also on a sound statistical treatment of its output -- adequate replication, awareness of initial-transient effects, and confidence intervals appropriate to the shape of the underlying data.
 
 \end{document}
