@@ -176,7 +176,7 @@ For each exercise, the report states the objective, describes the approach and t
 
 \subsection{Exercise 1}
 
-\textbf{Objective:} Generate 1000 random numbers uniformly distributed in $[0,1]$ using \texttt{runif()} and plot their histogram with \texttt{hist()}, to check informally whether the generator behaves as expected.
+\textbf{Objective:} Generate 10000 random numbers uniformly distributed in $[0,1]$ using \texttt{runif()} and plot their histogram with \texttt{hist()}, to check informally whether the generator behaves as expected.
 
 \textbf{Approach:} The following R script generates the sample and plots the histogram.
 
@@ -351,7 +351,7 @@ head(arrival_times, 10)
 \textbf{Approach:} Starting from the simulator in Annex A, the following changes were made to also track the average delay in system and the server utilization, in addition to the average delay in queue already computed by the original code:
 
 \begin{itemize}
-    \item Four new variables were initialized before the main loop: \texttt{AcumSystemTime=0} and \texttt{InServiceArrivalTime=NA}, to compute the delay in system (as described previously), and \texttt{BusyTime=0} together with \texttt{LastEventTime=0}, to track server utilization.
+    \item State variables were added to accumulate customers' time in the system and to measure the intervals during which the server is busy.
     \item At the very start of each loop iteration, right after \texttt{Time} is updated and \emph{before} branching on the event type, the interval since the last event is added to \texttt{BusyTime} if the server was busy during that interval. This must be done unconditionally for both arrivals and departures, since the server can remain busy across either type of event:
     \begin{configbox}
 NextEventType=which.min(EventList)
@@ -367,16 +367,17 @@ ServerStatus=1
 InServiceArrivalTime=Time          # NEW
 EventList[2]=Time+rexp(1,ServiceRate)
     \end{configbox}
-    \item In the departure branch, the sojourn time of the departing customer is added to \texttt{AcumSystemTime}, and \texttt{InServiceArrivalTime} is updated if another customer enters service:
+        \item On departure, the customer's time in the system is accumulated. If another customer is waiting, its arrival time is stored when service begins:
     \begin{configbox}
-AcumSystemTime=AcumSystemTime+Time-InServiceArrivalTime   # NEW
+AcumSystemTime=AcumSystemTime+
+    Time-InServiceArrivalTime
 NumQueueCompleted=NumQueueCompleted+1
 if (NumInQueue==0) {
   ServerStatus=0
   EventList[2]=Inf
 } else {
   AcumDelay=AcumDelay+Time-QueueArrivalTime[1]
-  InServiceArrivalTime=QueueArrivalTime[1]                # NEW
+    InServiceArrivalTime=QueueArrivalTime[1]
   QueueArrivalTime=QueueArrivalTime[-1]
   NumInQueue=NumInQueue-1
   EventList[2]=Time+rexp(1,ServiceRate)
@@ -390,7 +391,7 @@ Utilization=BusyTime/Time                          # NEW
     \end{configbox}
 \end{itemize}
 
-The simulation was run with $\text{NumQueueCompleted}=1000$ for three stable configurations ($\lambda/\mu<1$) and, for comparison, one critically loaded configuration ($\lambda/\mu=1$). The theoretical values were computed from Annex B: $W_Q = \dfrac{\lambda}{\mu(\mu-\lambda)}$, $W = \dfrac{1}{\mu-\lambda}$, and $\rho = \lambda/\mu$.
+The simulation was run with $\text{NumQueueCompleted}=1000$ for three stable configurations ($\lambda/\mu<1$) and, for comparison, one critically loaded configuration ($\lambda/\mu=1$). The values in the table are single simulation realizations; because the script does not set a random seed, subsequent runs can produce different estimates. The theoretical values were computed from Annex B: $W_Q = \dfrac{\lambda}{\mu(\mu-\lambda)}$, $W = \dfrac{1}{\mu-\lambda}$, and $\rho = \lambda/\mu$.
 
 \begin{table}[H]
 \centering
@@ -461,7 +462,7 @@ while (NumQueueCompleted<1000) {
 AvgDelay=AcumDelay/NumQueueCompleted
 \end{configbox}
 
-The simulation was run with $\text{NumQueueCompleted}=1000$ for two configurations satisfying $\rho=\lambda/(2\mu)<1$. The theoretical average delay in queue was computed from Annex C: $W_Q = P_Q \dfrac{\rho}{\lambda(1-\rho)}$, where $P_Q$ is the probability that an arrival finds both servers busy (Erlang C formula, $m=2$).
+The simulation was run with $\text{NumQueueCompleted}=1000$ for two configurations satisfying $\rho=\lambda/(2\mu)<1$. The values in the table are single simulation realizations; because the script does not set a random seed, subsequent runs can produce different estimates. The theoretical average delay in queue was computed from Annex C: $W_Q = P_Q \dfrac{\rho}{\lambda(1-\rho)}$, where $P_Q$ is the probability that an arrival finds both servers busy (Erlang C formula, $m=2$).
 
 \begin{table}[H]
 \centering
@@ -538,66 +539,39 @@ Simulation probability & Exact probability & Absolute error \\
 
 \textbf{Objective:} Analyze and compare the packet-size distributions recorded in the Wireshark captures for video, download, and normal-state network activity.
 
-\textbf{Approach:} Traffic was captured with Wireshark in three scenarios -- watching a video on YouTube, downloading a large file, and an idle ("normal state") system -- and each capture was exported to CSV via Wireshark's Export Packet Dissections option. For each capture, packet sizes were read from the \texttt{Length} field, missing or negative values were discarded, and packets larger than 1500 bytes were excluded; such values are attributed to TCP Segmentation Offload rather than genuine on-wire packet sizes, since 1500 bytes is the maximum payload of a standard Ethernet frame. The same 50-byte histogram bins and 0--1500-byte horizontal scale were used for all three captures, to make them directly comparable.
+\textbf{Approach:} Traffic was captured with Wireshark in three scenarios -- watching a video on YouTube, downloading a large file, and an idle ("normal state") system -- and each capture was exported to CSV via Wireshark's Export Packet Dissections option. Packet sizes were read from the Wireshark \texttt{Length} field; missing and negative values were discarded, but no upper size threshold was applied. This retains the observed 1514-byte records instead of assuming, without supporting capture evidence, that they are artifacts of TCP Segmentation Offload. All three histograms use common 50-byte bins and a horizontal scale extending to 1550 bytes.
 
 \begin{configbox}
-maximum_packet_size <- 1500   # packets above this are excluded (TCP Segmentation Offload)
+packet_sizes <- as.numeric(capture$Length)
+packet_sizes <- packet_sizes[!is.na(packet_sizes) & packet_sizes >= 0]
 
-csv_files <- c(
-  video        = "captures/capture_video.csv",
-  download     = "captures/capture_download.csv",
-  normal_state = "captures/capture_normal_state.csv"
-)
+cat("Packets analyzed:", length(packet_sizes), "\n")
+cat("Mean:", round(mean(packet_sizes), 2),
+        "bytes | Median:", median(packet_sizes), "bytes\n")
 
-read_packet_sizes <- function(file_name) {
-  data <- read.csv(file_name)
-  packet_sizes <- as.numeric(data$Length)
-  packet_sizes <- packet_sizes[!is.na(packet_sizes) & packet_sizes >= 0]
-
-  total    <- length(packet_sizes)
-  packet_sizes <- packet_sizes[packet_sizes <= maximum_packet_size]
-  excluded <- total - length(packet_sizes)
-
-  cat("\nFile:", file_name, "\n")
-  cat("Packets read:", total, "| Excluded:", excluded,
-      "| Analyzed:", length(packet_sizes), "\n")
-  cat("Mean:", round(mean(packet_sizes), 2),
-      "bytes | Median:", median(packet_sizes), "bytes\n")
-
-  packet_sizes
-}
-
-packet_sizes <- lapply(csv_files, read_packet_sizes)
-
-pdf("E9_packet_sizes.pdf", width = 9, height = 10)
-par(mfrow = c(length(packet_sizes), 1), mar = c(4, 4, 3, 1))
-for (name in names(packet_sizes)) {
-  hist(packet_sizes[[name]],
-       breaks = seq(0, maximum_packet_size, by = 50),
-       xlim = c(0, maximum_packet_size),
-       main = paste("Packet sizes -", gsub("_", " ", name)),
-       xlab = "Packet size (bytes)", ylab = "Frequency",
-       col = "lightblue", border = "white")
-}
-dev.off()
+hist(packet_sizes,
+         breaks = seq(0, 1550, by = 50),
+         xlim = c(0, 1550),
+         xlab = "Packet size (bytes)", ylab = "Frequency",
+         col = "lightblue", border = "white")
 \end{configbox}
 
 The results for all three captures are summarized in Table~\ref{tab:ex9_packet_sizes}.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|r|r|r|r|r|}
+\begin{tabular}{|l|r|r|r|}
 \hline
-Capture & Read & Excluded & Analyzed & Mean (bytes) & Median (bytes) \\
+Capture & Analyzed & Mean (bytes) & Median (bytes) \\
 \hline
-Video & 37,072 & 0 & 37,072 & 1088.96 & 1292 \\
+Video & 37,072 & 1088.96 & 1292 \\
 \hline
-Download & 1,023,788 & 514 & 1,023,274 & 1121.06 & 1304 \\
+Download & 1,023,788 & 1121.25 & 1304 \\
 \hline
-Normal state & 53,106 & 191 & 52,915 & 341.01 & 328 \\
+Normal state & 53,106 & 345.21 & 330 \\
 \hline
 \end{tabular}
-\caption{Packet-size statistics after excluding records larger than 1500 bytes.}
+\caption{Packet-size statistics for all valid Wireshark \texttt{Length} values.}
 \label{tab:ex9_packet_sizes}
 \end{table}
 
@@ -608,7 +582,7 @@ Normal state & 53,106 & 191 & 52,915 & 341.01 & 328 \\
     \label{fig:ex9_packet_sizes}
 \end{figure}
 
-\textbf{Conclusion:} As shown in Table~\ref{tab:ex9_packet_sizes} and Figure~\ref{fig:ex9_packet_sizes}, video and download traffic have very similar packet-size profiles, both dominated by large packets close to 1500 bytes (mean 1088.96 and 1121.06 bytes; median 1292 and 1304 bytes, respectively), while normal-state traffic is dominated by small packets (mean 341.01 bytes; median 328 bytes). This is consistent with the nature of each activity: both video streaming and file downloading are bulk data transfers, where the sender maximizes throughput by filling each packet close to the network's maximum transmission unit, so most packets are large. Normal-state (idle) traffic, in contrast, consists mostly of small control and background messages -- e.g., keep-alives, DNS queries, ACKs -- with no bulk payload to carry, which explains its much smaller packet sizes. For all three captures the median is close to the mean, indicating a fairly concentrated (not strongly skewed) distribution around the typical packet size for that type of traffic, as also visible in Figure~\ref{fig:ex9_packet_sizes}, where video and download both show a strong peak near 1500 bytes and normal-state shows its mass concentrated well below 500 bytes. As with any observational capture, these results characterize these particular sessions and do not, by themselves, establish a causal relationship between the activity type and packet size.
+\textbf{Conclusion:} Video and download have similar medians (1292 and 1304 bytes), while normal-state traffic has a substantially smaller median (330 bytes). The means are 1088.96, 1121.25, and 345.21 bytes, respectively. For video and download, the median exceeds the mean, indicating that smaller packet observations pull the mean downward; in the normal-state capture the mean is slightly above the median. The 1514-byte observations are retained as recorded by Wireshark, and their presence alone is not sufficient to identify an offloading artifact. These statistics describe the captured sessions only; they do not establish that the activity itself caused the observed packet-size differences.
 
 \subsection{Exercise 10}
 
@@ -660,13 +634,15 @@ $n$ & $\bar{x}$ (ms) & $s$ (ms) & $s/\sqrt{n}$ (ms) & Critical value & 95\% CI (
     \label{fig:ex10_ci}
 \end{figure}
 
-\textbf{Conclusion:} As shown in Table~\ref{tab:ex10_results} and Figure~\ref{fig:ex10_ci}, the Student's $t$ interval is wider than the Normal one (4.27~ms versus 3.70~ms), since $t_{9}=2.262 > z=1.960$. The Normal interval treats $s$ as if it were the true population standard deviation, which is only reasonable for large samples. With $n=10$, $s$ is itself a noisy estimate, and the $t$ distribution compensates for this extra uncertainty with heavier tails; the difference vanishes as $n$ grows. The Normal interval is therefore too optimistic and would cover the true mean less than 95\% of the time, so we prefer the Student's $t$ interval. In this run the RTTs are very stable: eight of the ten lie between 316 and 317~ms, with two higher values (321 and 325~ms) pulling the mean slightly above the cluster. As a result $s$ is small and both intervals are narrow, differing by less than 0.3~ms at each end. The data are not Normal (they are skewed to the right), and since the $t$ interval assumes approximately Normal data, it should be interpreted with some caution; this is investigated in Exercise 11, which assesses the actual coverage of these intervals.
+\textbf{Conclusion:} As shown in Table~\ref{tab:ex10_results} and Figure~\ref{fig:ex10_ci}, the Student's $t$ interval is wider than the Normal interval (4.27~ms versus 3.70~ms), since $t_{9}=2.262 > z=1.960$. With a small sample and unknown population standard deviation, the Student's $t$ interval is generally preferable under the assumption that the observations are independent and approximately Normal. The Normal interval here uses the sample standard deviation in place of the unknown population value; its actual coverage depends on the population distribution and cannot be asserted from this sample alone. Eight observed RTTs lie between 316 and 317~ms, while 321 and 325~ms are higher. These ten measurements are not enough to establish that the underlying RTT distribution is non-Normal or right-skewed, so the shape should be treated cautiously; Exercise 11 studies interval coverage under known distributions.
 
 \subsection{Exercise 11}
 
 \textbf{Objective:} For four distributions -- standard Normal ($\mu=0,\sigma^2=1$), Exponential ($\lambda=1$), Lognormal ($\mu=0,\sigma^2=1$) and Lognormal ($\mu=0,\sigma^2=2$) -- and for sample sizes $n=5,10,50,5000$, estimate the coverage of the 95\% confidence interval for the mean based on 1000 experiments, and discuss whether these intervals can be trusted.
 
 \textbf{Approach:} For each distribution and each sample size $n$, 1000 samples of size $n$ were generated. For each sample, the 95\% CI for the mean was computed as $\bar{x} \pm t_{0.975,\,n-1}\cdot s/\sqrt{n}$, using the Student's $t$ critical point, and the coverage was estimated as the fraction of the 1000 intervals that contained the true population mean $\mu$. For the exponential distribution $\mu=1/\lambda=1$, and for the lognormal distributions $\mu=e^{\,\mu_{\log}+\sigma^2/2}$, giving $\mu\approx1.649$ for $\sigma^2=1$ and $\mu\approx2.718$ for $\sigma^2=2$.
+
+The table and figure report one Monte Carlo realization. Since the script does not set a random seed, the exact coverage estimates may differ when it is run again.
 
 \begin{configbox}
 E <- 1000                              # number of experiments
@@ -728,7 +704,7 @@ $n$ & Normal & Exponential & Lognormal ($\sigma^2=1$) & Lognormal ($\sigma^2=2$)
     \label{fig:ex11_coverage}
 \end{figure}
 
-\textbf{Conclusion:} As shown in Table~\ref{tab:ex11_results} and Figure~\ref{fig:ex11_coverage}, the Normal distribution's coverage is close to the nominal 95\% for every sample size, including $n=5$, since the CI construction itself assumes the underlying data are Normal, and here that assumption holds exactly. For the three skewed distributions, coverage is well below 95\% at small $n$ and only approaches the nominal level as $n$ grows to 5000: the Exponential reaches 0.953 at $n=5000$ but only 0.898 at $n=5$, and this effect is more pronounced the more skewed the distribution is, with the Lognormal $\sigma^2=2$ (the most skewed of the four) showing the worst coverage at every $n$, falling to 0.699 at $n=5$. This happens because the CI relies on the Central Limit Theorem to justify treating $\bar{x}$ as approximately Normal; for small samples from a skewed distribution, this approximation is poor, so the interval is systematically miscentered and too narrow relative to the actual sampling distribution of $\bar{x}$, and it captures $\mu$ less often than the nominal 95\% would suggest. As $n$ increases, the CLT approximation improves and coverage converges to the nominal level for all four distributions. We conclude that confidence intervals based on the Normal/Student's $t$ approximation are not equally trustworthy across distributions: for symmetric, light-tailed data they are reliable even for small samples, but for skewed data a large sample size is required before the stated confidence level can actually be trusted; for a fixed sample size, the more skewed the underlying distribution, the less trustworthy the interval.
+\textbf{Conclusion:} The results illustrate that empirical coverage depends on both the sample size and the distribution. For the Normal population, the observed coverages are close to the nominal 95\% at all four sample sizes. For the skewed populations they are generally lower at small sample sizes and move closer to 95\% as $n$ increases, although the estimate at $n=5000$ for the lognormal with $\sigma^2=2$ is still 0.940. This last difference should be interpreted in light of Monte Carlo uncertainty: with 1000 experiments, an estimated coverage near 0.95 has a standard error of about 0.007. The results are consistent with the Central Limit Theorem improving the Normal approximation for larger samples, but a single set of 1000 experiments does not prove exact coverage or systematic bias.
 
 % ======================================================================
 \section{F. Output data analysis}
@@ -794,9 +770,18 @@ Across the ten replications, the sample mean was 3.3717 and the sample standard 
 \textbf{Approach:} The supplied \texttt{fmm1\_initcond()} function in \texttt{initcond.R} was used for every run. It creates the initial population using successive exponential inter-arrival times, then simulates until the requested number of customers has crossed the queue. The four combinations of run length and initial population were generated with 25 independent replications each:
 
 \begin{configbox}
-fmm1_initcond(
-    ArrivalRate = 3, ServiceRate = 4,
-    NumEndClients = 20, InitClients = 10
+set.seed(13)
+run_results <- expand.grid(
+    run = 1:25,
+    run_length = c(20, 2000),
+    initial_clients = c(0, 10)
+)
+run_results$average_queue_delay <- mapply(
+    fmm1_initcond,
+    ArrivalRate = 3,
+    ServiceRate = 4,
+    NumEndClients = run_results$run_length,
+    InitClients = run_results$initial_clients
 )
 \end{configbox}
 
@@ -874,7 +859,7 @@ $\rho$ & Delays per replication & $\gamma=5\%$ & $\gamma=10\%$ & $\gamma=20\%$ \
     \label{fig:ex14_repdel}
 \end{figure}
 
-\textbf{Conclusion:} The helper requires more replications for stricter relative-error targets, while increasing the number of measured delays per replication generally reduces the required count. The theoretical variance rises steeply with load (from 3 at $\rho=0.50$ to 399 at $\rho=0.95$), so high-load estimates are intrinsically more variable. The observed replication counts are not perfectly monotonic in $\rho$, because each count is itself estimated from random replications and can fluctuate; nevertheless, for 1000 delays the count at $\rho=0.95$ is substantially higher than at $\rho=0.50$ for every target. The results demonstrate that precision target, replication length, and traffic intensity all affect the computational effort, and that individual counts should be interpreted as stochastic outcomes of the procedure.
+\textbf{Conclusion:} The table shows that stricter relative-error targets generally require more replications, while measuring more delays per replication generally reduces the count. Queue-delay variance increases sharply with load, from 3 at $\rho=0.50$ to 399 at $\rho=0.95$, so high-load estimates are intrinsically more variable. The measured counts are stochastic and are not monotonic in $\rho$ for every row; therefore, this experiment supports the role of variability and precision in replication effort but does not establish that the required count rises monotonically with traffic intensity in every finite run.
 
 % ======================================================================
 \section{Conclusion}
@@ -890,7 +875,7 @@ Exercise 8 demonstrated Monte Carlo estimation of a probability, converging towa
 
 Exercises 10--11 addressed the reliability of confidence intervals: the RTT measurements favored the more conservative Student's $t$ interval for small samples, and the coverage study quantified why, showing that intervals built from skewed distributions with small $n$ cover the true mean far less often than the nominal 95\% suggests, only becoming trustworthy once $n$ is large enough for the CLT approximation to hold.
 
-Finally, Exercises 12--14 examined practical challenges of output analysis. Exercise 12 showed that a single run is not sufficient to draw reliable conclusions, given substantial run-to-run variability. Exercise 13 showed that initial conditions can bias short-run estimates considerably, an effect that diminishes but does not always vanish with longer runs. Exercise 14 showed that the replications needed for a target relative error grow with traffic intensity $\rho$ and with a stricter target, reflecting the increase in queue-delay variance as the system approaches saturation.
+Finally, Exercises 12--14 examined practical challenges of output analysis. Exercise 12 illustrated run-to-run variability in finite simulations. Exercise 13 showed that initial conditions can strongly affect short-run estimates, with a smaller effect in longer runs. Exercise 14 showed that replication effort depends on the precision target, the number of measured delays per replication, and the traffic intensity; the increasing theoretical queue-delay variance near saturation motivates additional replication, although the finite-run counts need not increase monotonically for every tested case.
 
 Taken together, the exercises show that a correct simulation result depends not only on a correctly implemented model, but also on a sound statistical treatment of its output -- adequate replication, awareness of initial-transient effects, and confidence intervals appropriate to the shape of the underlying data.
 

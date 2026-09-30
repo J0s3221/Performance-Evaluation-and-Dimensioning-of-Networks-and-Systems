@@ -1,4 +1,13 @@
-fmm1_initcond(
-    ArrivalRate = 3, ServiceRate = 4,
-    NumEndClients = 20, InitClients = 10
+set.seed(13)
+run_results <- expand.grid(
+    run = 1:25,
+    run_length = c(20, 2000),
+    initial_clients = c(0, 10)
+)
+run_results$average_queue_delay <- mapply(
+    fmm1_initcond,
+    ArrivalRate = 3,
+    ServiceRate = 4,
+    NumEndClients = run_results$run_length,
+    InitClients = run_results$initial_clients
 )
