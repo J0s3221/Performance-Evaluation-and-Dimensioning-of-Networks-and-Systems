@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.31)  30 SEP 2026 20:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.31)  30 SEP 2026 20:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -806,103 +806,130 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout5 = `report.toc'.
 
  [1] [2]
-<../images/E1_Histogram.pdf, id=179, 505.89pt x 505.89pt>
-File: ../images/E1_Histogram.pdf Graphic file (type pdf)
-<use ../images/E1_Histogram.pdf>
-Package pdftex.def Info: ../images/E1_Histogram.pdf  used on input line 185.
-(pdftex.def)             Requested size: 290.22107pt x 290.22835pt.
- [3 <../images/E1_Histogram.pdf>]
-<../images/E3_Bernoulli.pdf, id=194, 505.89pt x 505.89pt>
-File: ../images/E3_Bernoulli.pdf Graphic file (type pdf)
-<use ../images/E3_Bernoulli.pdf>
-Package pdftex.def Info: ../images/E3_Bernoulli.pdf  used on input line 212.
-(pdftex.def)             Requested size: 290.22107pt x 290.22835pt.
- [4 <../images/E3_Bernoulli.pdf>]
-<../images/E4_pdfExpoDistribution_notnorm.png, id=208, 339.2675pt x 340.27126pt>
-File: ../images/E4_pdfExpoDistribution_notnorm.png Graphic file (type png)
-<use ../images/E4_pdfExpoDistribution_notnorm.png>
-Package pdftex.def Info: ../images/E4_pdfExpoDistribution_notnorm.png  used on input line 229.
-(pdftex.def)             Requested size: 232.17242pt x 232.85594pt.
-<../images/E4_pdfExpoDistribution.pdf, id=209, 505.89pt x 505.89pt>
-File: ../images/E4_pdfExpoDistribution.pdf Graphic file (type pdf)
-<use ../images/E4_pdfExpoDistribution.pdf>
-Package pdftex.def Info: ../images/E4_pdfExpoDistribution.pdf  used on input line 236.
-(pdftex.def)             Requested size: 232.17242pt x 232.17186pt.
- [5 <../images/E4_pdfExpoDistribution_notnorm.png> <../images/E4_pdfExpoDistribution.pdf>]
 \g__tcobox_out_iow=\write6
 \openout6 = `report.listing'.
 
  (./report.listing)
+<../images/E1_Histogram.pdf, id=179, 505.89pt x 505.89pt>
+File: ../images/E1_Histogram.pdf Graphic file (type pdf)
+<use ../images/E1_Histogram.pdf>
+Package pdftex.def Info: ../images/E1_Histogram.pdf  used on input line 191.
+(pdftex.def)             Requested size: 290.22107pt x 290.22835pt.
+ [3 <../images/E1_Histogram.pdf>]
+\openout6 = `report.listing'.
+
+ (./report.listing)
+<../images/E2_Deterministic.png, id=199, 130.98938pt x 100.87688pt>
+File: ../images/E2_Deterministic.png Graphic file (type png)
+<use ../images/E2_Deterministic.png>
+Package pdftex.def Info: ../images/E2_Deterministic.png  used on input line 218.
+(pdftex.def)             Requested size: 145.11053pt x 111.75453pt.
+ [4 <../images/E2_Deterministic.png>]
+\openout6 = `report.listing'.
+
+ (./report.listing)
+<../images/E3_Bernoulli.pdf, id=217, 505.89pt x 505.89pt>
+File: ../images/E3_Bernoulli.pdf Graphic file (type pdf)
+<use ../images/E3_Bernoulli.pdf>
+Package pdftex.def Info: ../images/E3_Bernoulli.pdf  used on input line 256.
+(pdftex.def)             Requested size: 290.22107pt x 290.22835pt.
+ [5 <../images/E3_Bernoulli.pdf>]
+\openout6 = `report.listing'.
+
+ (./report.listing)
+<../images/E4_pdfExpoDistribution_notnorm.png, id=248, 339.2675pt x 340.27126pt>
+File: ../images/E4_pdfExpoDistribution_notnorm.png Graphic file (type png)
+<use ../images/E4_pdfExpoDistribution_notnorm.png>
+Package pdftex.def Info: ../images/E4_pdfExpoDistribution_notnorm.png  used on input line 295.
+(pdftex.def)             Requested size: 232.17242pt x 232.85594pt.
+<../images/E4_pdfExpoDistribution.pdf, id=249, 505.89pt x 505.89pt>
+File: ../images/E4_pdfExpoDistribution.pdf Graphic file (type pdf)
+<use ../images/E4_pdfExpoDistribution.pdf>
+Package pdftex.def Info: ../images/E4_pdfExpoDistribution.pdf  used on input line 302.
+(pdftex.def)             Requested size: 232.17242pt x 232.17186pt.
+ [6]
+\openout6 = `report.listing'.
+
+ (./report.listing) [7 <../images/E4_pdfExpoDistribution_notnorm.png> <../images/E4_pdfExpoDistribution.pdf>]
+<../images/E5_Console.png, id=292, 462.72874pt x 177.66376pt>
+File: ../images/E5_Console.png Graphic file (type png)
+<use ../images/E5_Console.png>
+Package pdftex.def Info: ../images/E5_Console.png  used on input line 336.
+(pdftex.def)             Requested size: 338.58632pt x 129.99979pt.
+ [8 <../images/E5_Console.png>]
 \openout6 = `report.listing'.
 
  (./report.listing)
 \openout6 = `report.listing'.
 
- (./report.listing) [6{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
+ (./report.listing)
 \openout6 = `report.listing'.
 
- (./report.listing) [7]
-\openout6 = `report.listing'.
-
- (./report.listing) [8] [9]
+ (./report.listing) [9{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 \openout6 = `report.listing'.
 
  (./report.listing) [10]
 \openout6 = `report.listing'.
 
- (./report.listing) [11]
-<../images/E9_packet_sizes.pdf, id=352, 650.43pt x 722.7pt>
+ (./report.listing) [11] [12]
+\openout6 = `report.listing'.
+
+ (./report.listing) [13]
+\openout6 = `report.listing'.
+
+ (./report.listing) [14]
+<../images/E9_packet_sizes.pdf, id=440, 650.43pt x 722.7pt>
 File: ../images/E9_packet_sizes.pdf Graphic file (type pdf)
 <use ../images/E9_packet_sizes.pdf>
-Package pdftex.def Info: ../images/E9_packet_sizes.pdf  used on input line 491.
+Package pdftex.def Info: ../images/E9_packet_sizes.pdf  used on input line 580.
 (pdftex.def)             Requested size: 396.63496pt x 440.71402pt.
- [12] [13 <../images/E9_packet_sizes.pdf>]
-<../images/ping RTTs.png, id=385, 796.9775pt x 260.975pt>
+ [15] [16 <../images/E9_packet_sizes.pdf>]
+<../images/ping RTTs.png, id=472, 796.9775pt x 260.975pt>
 File: ../images/ping RTTs.png Graphic file (type png)
 <use ../images/ping RTTs.png>
-Package pdftex.def Info: ../images/ping RTTs.png  used on input line 506.
+Package pdftex.def Info: ../images/ping RTTs.png  used on input line 595.
 (pdftex.def)             Requested size: 483.69687pt x 158.39012pt.
 \openout6 = `report.listing'.
 
- (./report.listing) [14 <../images/ping RTTs.png>]
-<../images/E10_CI.pdf, id=407, 505.89pt x 230.8625pt>
+ (./report.listing) [17 <../images/ping RTTs.png>]
+<../images/E10_CI.pdf, id=493, 505.89pt x 230.8625pt>
 File: ../images/E10_CI.pdf Graphic file (type pdf)
 <use ../images/E10_CI.pdf>
-Package pdftex.def Info: ../images/E10_CI.pdf  used on input line 543.
+Package pdftex.def Info: ../images/E10_CI.pdf  used on input line 632.
 (pdftex.def)             Requested size: 362.77264pt x 165.55507pt.
 \openout6 = `report.listing'.
 
- (./report.listing) [15 <../images/E10_CI.pdf>] [16]
-<../images/E11_Coverage.pdf, id=462, 505.89pt x 289.08pt>
+ (./report.listing) [18 <../images/E10_CI.pdf>] [19]
+<../images/E11_Coverage.pdf, id=549, 505.89pt x 289.08pt>
 File: ../images/E11_Coverage.pdf Graphic file (type pdf)
 <use ../images/E11_Coverage.pdf>
-Package pdftex.def Info: ../images/E11_Coverage.pdf  used on input line 613.
+Package pdftex.def Info: ../images/E11_Coverage.pdf  used on input line 702.
 (pdftex.def)             Requested size: 386.95897pt x 221.12341pt.
- [17 <../images/E11_Coverage.pdf>]
+ [20 <../images/E11_Coverage.pdf>]
 \openout6 = `report.listing'.
 
  (./report.listing)
-<../images/E12_delay_runs.pdf, id=475, 578.16pt x 361.35pt>
+<../images/E12_delay_runs.pdf, id=562, 578.16pt x 361.35pt>
 File: ../images/E12_delay_runs.pdf Graphic file (type pdf)
 <use ../images/E12_delay_runs.pdf>
-Package pdftex.def Info: ../images/E12_delay_runs.pdf  used on input line 670.
+Package pdftex.def Info: ../images/E12_delay_runs.pdf  used on input line 759.
 (pdftex.def)             Requested size: 377.28296pt x 235.80103pt.
- [18]
+ [21]
 \openout6 = `report.listing'.
 
- (./report.listing) [19 <../images/E12_delay_runs.pdf>]
-<../images/E13_initial_conditions.pdf, id=504, 650.43pt x 397.485pt>
+ (./report.listing) [22 <../images/E12_delay_runs.pdf>]
+<../images/E13_initial_conditions.pdf, id=590, 650.43pt x 397.485pt>
 File: ../images/E13_initial_conditions.pdf Graphic file (type pdf)
 <use ../images/E13_initial_conditions.pdf>
-Package pdftex.def Info: ../images/E13_initial_conditions.pdf  used on input line 724.
+Package pdftex.def Info: ../images/E13_initial_conditions.pdf  used on input line 813.
 (pdftex.def)             Requested size: 425.6556pt x 260.12714pt.
- [20] [21 <../images/E13_initial_conditions.pdf>]
-<../images/E14_repdel_analysis.pdf, id=537, 722.7pt x 794.97pt>
+ [23] [24 <../images/E13_initial_conditions.pdf>]
+<../images/E14_repdel_analysis.pdf, id=623, 722.7pt x 794.97pt>
 File: ../images/E14_repdel_analysis.pdf Graphic file (type pdf)
 <use ../images/E14_repdel_analysis.pdf>
-Package pdftex.def Info: ../images/E14_repdel_analysis.pdf  used on input line 768.
+Package pdftex.def Info: ../images/E14_repdel_analysis.pdf  used on input line 857.
 (pdftex.def)             Requested size: 396.63496pt x 436.30083pt.
- [22] [23 <../images/E14_repdel_analysis.pdf>] [24] (./report.aux)
+ [25] [26 <../images/E14_repdel_analysis.pdf>] [27] (./report.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -911,18 +938,18 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 379FDD4DA7774F241724A5E5F5DC7BFE;3121.
  ) 
 Here is how much of TeX's memory you used:
- 35921 strings out of 467525
- 758534 string characters out of 5418982
- 1377555 words of memory out of 5000000
- 64041 multiletter control sequences out of 15000+600000
+ 36022 strings out of 467525
+ 760374 string characters out of 5418982
+ 1377782 words of memory out of 5000000
+ 64062 multiletter control sequences out of 15000+600000
  640740 words of font info for 90 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  116i,13n,121p,1647b,1628s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on report.pdf (25 pages, 439462 bytes).
+Output written on report.pdf (28 pages, 493115 bytes).
 PDF statistics:
- 690 PDF objects out of 1000 (max. 8388607)
- 573 compressed objects within 6 object streams
- 242 named destinations out of 1000 (max. 500000)
- 393 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 789 PDF objects out of 1000 (max. 8388607)
+ 664 compressed objects within 7 object streams
+ 312 named destinations out of 1000 (max. 500000)
+ 403 words of extra memory for PDF output out of 10000 (max. 10000000)
 
