@@ -1,3 +1,4 @@
+set.seed(6)
 ArrivalRate=1
 ServiceRate=2 
 BusyTime=0
@@ -12,7 +13,7 @@ QueueArrivalTime=c()
 InServiceArrivalTime=NA   # arrival time of whoever's currently being served
 EventList=c(rexp(1,ArrivalRate),Inf)
 
-while (NumQueueCompleted<1000) {
+while (NumQueueCompleted<100000) {
   NextEventType=which.min(EventList)
   Time=EventList[NextEventType]
   if (ServerStatus==1) {
@@ -47,3 +48,7 @@ while (NumQueueCompleted<1000) {
 AvgDelay=AcumDelay/NumQueueCompleted
 AvgTimeInSystem=AcumSystemTime/NumQueueCompleted
 Utilization=BusyTime/Time
+
+cat("\nAverage Delay:", AvgDelay, "\n")
+cat("\nAverage Time in system:", AvgTimeInSystem, "\n")
+cat("\nUtilization:", Utilization, "\n")

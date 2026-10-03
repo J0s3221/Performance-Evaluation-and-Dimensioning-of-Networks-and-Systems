@@ -1,4 +1,5 @@
-ArrivalRate=1
+set.seed(7)
+ArrivalRate=2
 ServiceRate=2
 Time=0
 NumQueueCompleted=0
@@ -9,7 +10,7 @@ AvgDelay=0
 QueueArrivalTime=c()
 EventList=c(rexp(1,ArrivalRate), Inf, Inf)  # [arrival, dep@server1, dep@server2]
 
-while (NumQueueCompleted<1000) {
+while (NumQueueCompleted<100000) {
   NextEventType=which.min(EventList)
   Time=EventList[NextEventType]
 
@@ -40,3 +41,5 @@ while (NumQueueCompleted<1000) {
 }
 
 AvgDelay=AcumDelay/NumQueueCompleted
+
+cat("\nAverage Delay:", AvgDelay, "\n")
