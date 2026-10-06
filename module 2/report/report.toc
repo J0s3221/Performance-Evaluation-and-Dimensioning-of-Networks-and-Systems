@@ -6,5 +6,5 @@
 \contentsline {subsection}{\numberline {2.3}Slotted ALOHA}{4}{subsection.2.3}%
 \contentsline {subsubsection}{\numberline {2.3.1}Theoretical throughput}{4}{subsubsection.2.3.1}%
 \contentsline {subsubsection}{\numberline {2.3.2}Discrete-event simulation}{6}{subsubsection.2.3.2}%
-\contentsline {subsubsection}{\numberline {2.3.3}Comparison with CSMA and CSMA/CD}{6}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\numberline {2.3.3}Comparison with CSMA and CSMA/CD}{7}{subsubsection.2.3.3}%
 \contentsline {section}{\numberline {3}Conclusion}{7}{section.3}%

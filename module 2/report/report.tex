@@ -229,23 +229,23 @@ The fitted chain estimates an attack probability of approximately $0.3997$ in st
 
 \subsubsection{Theoretical throughput}
 
-\textbf{Approach:} A system state is the number of backlogged users. A thinking user transmits with probability $\sigma$ in a slot, while a backlogged user transmits with probability $p$. Throughput is the long-run number of successful transmissions per slot. The script \texttt{E3\_SlottedALOHA.R} calls the supplied \texttt{aloha\_theo()} function to evaluate the stationary throughput over the requested parameter ranges.
+\textbf{Approach:} The supplied \texttt{aloha\_plot.R} script uses \texttt{aloha\_theo()} to plot theoretical throughput versus $\sigma$. With $N=10$, it plots four curves for $p$: 0.3, 0.4, 0.5, and 0.6. With $N=25$, it plots $p=0.2$ and $p=0.3$. In both plots, $\sigma$ is logarithmically spaced as specified in the script.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{../images/E3_ALOHA_N10.jpeg}
+    \includegraphics[width=0.85\textwidth]{../images/aloha10.jpeg}
     \caption{Theoretical slotted-ALOHA throughput for $N=10$ and the four requested values of $p$.}
     \label{fig:aloha-n10}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{../images/E3_ALOHA_N25.jpeg}
+    \includegraphics[width=0.85\textwidth]{../images/aloha25.jpeg}
     \caption{Theoretical slotted-ALOHA throughput for $N=25$ and the two requested values of $p$.}
     \label{fig:aloha-n25}
 \end{figure}
 
-\textbf{Results and conclusion:} Increasing $\sigma$ causes more thinking users to attempt transmission. Initially this tends to increase throughput, but excessive attempts create collisions and move users into the backlog, so the throughput eventually peaks and can decrease. Increasing $p$ helps clear a backlog when few backlogged users are present, but when many are backlogged it also raises the chance of collisions. Increasing $N$ creates more potential traffic and contention; it does not guarantee higher throughput, since a larger population can spend more time in collision-heavy backlog states. The best operating point therefore depends jointly on all three parameters.
+\textbf{Results and conclusion:} Increasing $\sigma$ makes more THINKING users transmit. Throughput can first increase as successful attempts become more frequent, then decrease when the added attempts create more collisions and BACKLOGGED users. Increasing $p$ makes BACKLOGGED users retry more often; this can clear a small backlog, but can also increase collisions when many users are waiting. Increasing $N$ adds potential transmissions and contention, so throughput depends on the interaction between $N$, $p$, and $\sigma$, rather than increasing monotonically with any one parameter.
 
 \subsubsection{Discrete-event simulation}
 
