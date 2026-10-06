@@ -1,48 +1,28 @@
-script_path <- tryCatch(sys.frames()[[1]]$ofile, error = function(e) NULL)
-if (is.null(script_path) || !nzchar(script_path)) {
-  script_arg <- grep("^--file=", commandArgs(), value = TRUE)
-  if (length(script_arg)) script_path <- sub("^--file=", "", script_arg[1])
-}
-if (is.null(script_path) || !nzchar(script_path)) {
-  stop("Run this file directly or source it from RStudio so its location can be determined.")
-}
+# Path to the module folder
+module_dir <- "/Users/tiagovideira/OneDrive - tecnico.pt/Performance-Evaluation-and-Dimensioning-of-Networks-and-Systems/module 2"
 
-script_dir <- dirname(normalizePath(script_path, winslash = "/", mustWork = TRUE))
-module_dir <- dirname(script_dir)
-data_file <- file.path(module_dir, "scripts_helper", "2dtmcdata.txt")
-if (!file.exists(data_file)) stop("Attack trace not found: ", data_file)
+# Read the attack trace (the last column holds the 0/1 observations)
+mydata <- read.table(file.path(module_dir, "scripts_helper", "2dtmcdata.txt"), sep = "\t")
+observations <- mydata[[ncol(mydata)]]
 
-mydata <- read.table(data_file, sep = "\t")
-observations <- as.integer(mydata[[ncol(mydata)]])
-if (length(observations) < 2L || anyNA(observations) || any(!observations %in% 0:1)) {
-  stop("The attack trace must contain at least two observations, all coded as 0 or 1.")
-}
+# Pair each observation with the one that follows it
+from_state <- head(observations, -1)
+to_state   <- tail(observations, -1)
 
-from_state <- head(observations, -1L)
-to_state <- tail(observations, -1L)
-transition_counts <- table(
-  factor(from_state, levels = 0:1),
-  factor(to_state, levels = 0:1)
-)
-if (any(rowSums(transition_counts) == 0L)) {
-  stop("Cannot estimate a transition row because the trace never visits its origin state.")
-}
-
+# Count the transitions, then turn each row into probabilities
+transition_counts        <- table(from_state, to_state)
 transition_probabilities <- prop.table(transition_counts, margin = 1)
-results <- data.frame(
-  from_state = rep(0:1, each = 2),
-  to_state = rep(0:1, times = 2),
-  transitions = as.integer(t(transition_counts)),
-  probability = as.vector(t(transition_probabilities))
-)
-stationary_attack_probability <- transition_probabilities[1, 2] /
-  (transition_probabilities[1, 2] + transition_probabilities[2, 1])
 
+# Long-run (stationary) probability of being in the attack state
+p01 <- transition_probabilities["0", "1"]
+p10 <- transition_probabilities["1", "0"]
+
+
+# Print results
 cat("Number of observations:", length(observations), "\n")
-cat("Number of transitions:", length(observations) - 1L, "\n")
-cat("Estimated transition matrix (rows: current state; columns: next state):\n")
 print(transition_probabilities)
-cat("Estimated stationary probability of an attack:",
-    round(stationary_attack_probability, 6), "\n")
 
-write.csv(results, file.path(script_dir, "E2_DTMCAttackTransitions.csv"), row.names = FALSE)
+# Save the transition probabilities to a CSV
+write.csv(as.data.frame(transition_probabilities),
+          file.path(module_dir, "scripts", "E2_DTMCAttackTransitions.csv"),
+          row.names = FALSE)
