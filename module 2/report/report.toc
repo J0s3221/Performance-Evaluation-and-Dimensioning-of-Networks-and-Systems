@@ -3,8 +3,8 @@
 \contentsline {section}{\numberline {2}A. Discrete-time Markov chains}{3}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Bernoulli and 2-DTMC sample paths}{3}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Estimating transitions from the attack trace}{4}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Slotted ALOHA}{5}{subsection.2.3}%
-\contentsline {subsubsection}{\numberline {2.3.1}Theoretical throughput}{5}{subsubsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3}Slotted ALOHA}{4}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Theoretical throughput}{4}{subsubsection.2.3.1}%
 \contentsline {subsubsection}{\numberline {2.3.2}Discrete-event simulation}{6}{subsubsection.2.3.2}%
-\contentsline {subsubsection}{\numberline {2.3.3}Comparison with CSMA and CSMA/CD}{7}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\numberline {2.3.3}Comparison with CSMA and CSMA/CD}{6}{subsubsection.2.3.3}%
 \contentsline {section}{\numberline {3}Conclusion}{7}{section.3}%

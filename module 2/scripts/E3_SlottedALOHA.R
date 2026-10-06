@@ -9,6 +9,8 @@ if (is.null(script_path) || !nzchar(script_path)) {
 
 script_dir <- dirname(normalizePath(script_path, winslash = "/", mustWork = TRUE))
 module_dir <- dirname(script_dir)
+images_dir <- file.path(module_dir, "images")
+dir.create(images_dir, showWarnings = FALSE)
 theory_file <- file.path(module_dir, "scripts_helper", "aloha", "aloha_theo.R")
 if (!file.exists(theory_file)) stop("ALOHA theory helper not found: ", theory_file)
 source(theory_file)
@@ -19,7 +21,7 @@ make_theory_plot <- function(N, p_values, sigma_values, output_file) {
     vapply(sigma_values, function(sigma) aloha_theo(N, probability, sigma), numeric(1))
   })
 
-  jpeg(file.path(script_dir, output_file), width = 1200, height = 750, quality = 95)
+  jpeg(file.path(images_dir, output_file), width = 1200, height = 750, quality = 95)
   matplot(
     sigma_values,
     do.call(cbind, curves),
