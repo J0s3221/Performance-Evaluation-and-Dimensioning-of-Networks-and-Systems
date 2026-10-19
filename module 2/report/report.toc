@@ -7,4 +7,14 @@
 \contentsline {subsubsection}{\numberline {2.3.1}Theoretical throughput}{4}{subsubsection.2.3.1}%
 \contentsline {subsubsection}{\numberline {2.3.2}Discrete-event simulation}{6}{subsubsection.2.3.2}%
 \contentsline {subsubsection}{\numberline {2.3.3}Comparison with CSMA and CSMA/CD}{7}{subsubsection.2.3.3}%
-\contentsline {section}{\numberline {3}Conclusion}{7}{section.3}%
+\contentsline {section}{\numberline {3}B. Discrete-time Markov chains and Continuous-time Markov chains}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}4}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}5}{8}{subsection.3.2}%
+\contentsline {section}{\numberline {4}C. Queuing systems}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}6}{8}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}7}{8}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}.a}{8}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}.b}{8}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}.c}{8}{subsubsection.4.2.3}%
+\contentsline {section}{\numberline {5}D. Workloads}{8}{section.5}%
+\contentsline {section}{\numberline {6}Conclusion}{8}{section.6}%
