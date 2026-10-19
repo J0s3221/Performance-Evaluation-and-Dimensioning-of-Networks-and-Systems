@@ -86,6 +86,8 @@
     \titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
     \fancyfoot[C]{\thepage}
 
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+
 % New and re-newcommands
 \newcommand{\sen}{\operatorname{\sen}} % Sine function definition
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Specific rule definition
@@ -266,11 +268,78 @@ The fitted chain estimates an attack probability of approximately $0.3997$ in st
 
 \textbf{Results and conclusion:} The simulated estimates are close to their theoretical values for all three configurations. The results illustrate the sensitivity to the offered load and retransmission probability: the middle setting has the highest throughput, while raising $p$ to $0.6$ at the same $\sigma$ leaves more users contending in the backlog and substantially reduces successful transmissions.
 
-\subsubsection{Comparison with CSMA and CSMA/CD}
+\subsubsection{ALOHA vs.\ CSMA, CSMA/CD and CSMA/CA}
 
-ALOHA allows a user to transmit without first sensing whether the channel is occupied, so simultaneous attempts can collide. CSMA (Carrier Sense Multiple Access) reduces collisions by sensing the medium before transmitting. CSMA/CA, used by IEEE~802.11 wireless LANs, attempts to avoid collisions because a wireless station generally cannot reliably detect a collision while it is transmitting. CSMA/CD (Carrier Sense Multiple Access with Collision Detection) detects collisions during transmission and was used by shared, half-duplex Ethernet; modern switched full-duplex Ethernet does not use CSMA/CD. ALOHA-family random-access methods are also used in RFID tag anti-collision protocols and satellite/random-access links. Carrier sensing can improve channel efficiency when stations can sense one another, while ALOHA remains useful where sensing is unavailable or impractical.
+\textbf{Approach:} Random-access throughput is limited by collisions. The
+protocols differ in (i) how long a frame is exposed to collisions (the
+\emph{vulnerable period}) and (ii) how much channel time a collision wastes.
+Let $T$ be the frame transmission time, $\tau$ the propagation delay and
+$a=\tau/T$.
 
-\textbf{References:} GS1, \emph{EPC Radio-Frequency Identity Protocols Generation-2 UHF RFID}, for framed slotted-ALOHA tag inventory; IEEE~802.11 for wireless LAN medium access; and IEEE~802.3 for Ethernet, including the historical shared-medium collision-detection mechanism.
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        xmode=log, domain=0.01:30, samples=200,
+        width=0.8\textwidth, height=6.5cm, grid=both,
+        xlabel={Offered load $G$ (frames per frame time)},
+        ylabel={Throughput $S$}, ymin=0, ymax=1,
+        legend pos=north east, legend style={font=\small}]
+        \addplot[thick,blue]{x*exp(-2*x)};
+        \addplot[thick,red]{x*exp(-x)};
+        \addplot[thick,black]{x*exp(-0.01*x)/(x*1.02+exp(-0.01*x))};
+        \legend{Pure ALOHA, Slotted ALOHA, Non-persistent CSMA ($a=0.01$)}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Classical throughput curves (infinite population).}
+    \label{fig:mac-throughput}
+\end{figure}
+
+\begin{table}[H]
+    \centering \small
+    \caption{Random-access protocols compared.}
+    \label{tab:mac}
+    \begin{tabular}{p{1.9cm}p{4.8cm}p{4.4cm}p{3.4cm}}
+        \hline
+        Protocol & How it works & Throughput & Used in \\
+        \hline
+        Pure ALOHA & Transmit immediately; no ACK $\Rightarrow$ retry after a random delay.
+          & Vulnerable period $2T$. $S_{\max}=1/(2e)\approx0.18$.
+          & ALOHAnet, LoRaWAN uplink \\
+        Slotted ALOHA & Same, but only at slot boundaries.
+          & Vulnerable period $T$. $S_{\max}=1/e\approx0.37$.
+          & RFID (EPC Gen2), cellular/satellite random-access channels \\
+        CSMA & ``Listen before talk'': if the channel is busy, defer
+          (1-persistent: send when idle; non-persistent: wait a random time and re-sense;
+          $p$-persistent: send with probability $p$ per slot).
+          & Vulnerable period shrinks to $\tau$. For $a=0.01$, non-persistent reaches $\approx0.8$; falls as $a$ grows.
+          & Early packet radio; basis of the two variants below \\
+        CSMA/CD & CSMA plus listening \emph{while} sending. On a collision: abort,
+          send a jam signal, wait a random time (binary exponential backoff).
+          Needs frame time $\ge 2\tau$.
+          & A collision wastes $\approx2\tau$ instead of $T$. Efficiency $\approx 1/(1+5a)$ (approx.).
+          & Shared Ethernet (IEEE 802.3, hubs/coax); not in switched full-duplex \\
+        CSMA/CA & Wait for the channel to be idle (DIFS), then count down a random
+          backoff, frozen while busy; receiver ACKs; optional RTS/CTS.
+          Avoids collisions since a radio cannot detect them while sending.
+          & Fewer collisions than CSMA, but backoff and ACK overhead lower the gain.
+          & IEEE 802.11 Wi-Fi, IEEE 802.15.4 (Zigbee) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Conclusion:} Each step wastes less channel time. Slotting halves the
+vulnerable period ($2T\to T$) and doubles the peak throughput. Carrier sensing
+cuts it to about $\tau$, so for $a\ll1$ throughput exceeds $0.8$. Collision
+detection reduces the cost of a collision from a full frame to about $2\tau$.
+CSMA/CA gives up part of this gain to work where collisions cannot be detected
+(wireless). When $a$ is large (e.g.\ satellite links), sensing is of little
+help and ALOHA-type access remains in use. The simulated peaks in
+Section~X agree with the slotted-ALOHA limit $1/e$.
+
+\textbf{References:} Bertsekas \& Gallager, \emph{Data Networks}, Ch.~4;
+Rom \& Sidi, \emph{Multiple Access Protocols}; Kleinrock \& Tobagi (1975);
+Kurose \& Ross, \emph{Computer Networking}.
 
 \section{B. Discrete-time Markov chains and Continuous-time Markov chains}
 
