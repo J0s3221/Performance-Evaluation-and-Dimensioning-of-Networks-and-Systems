@@ -508,13 +508,128 @@ confidence intervals are narrow, but the estimates are not long-run averages,
 since they just reflect the run length. Therefore steady-state performance
 measures only make sense for $\rho<1$.
 
-\subsection{7}
+\subsection{Exercise 7: Point-to-point link (\texttt{ppl.R})}
 
-\subsubsection{.a}
+\textbf{Setup:} A link with $C=100$~kb/s serves two Poisson flows with
+1000-bit packets, so $\mu=100$~pkt/s and the mean transmission time is $S=10$~ms.
+Only \texttt{parameters.R} was changed. The simulator reports the average delay
+in the system (queuing plus transmission) of each flow.
 
-\subsubsection{.b}
+%\begin{table}[H]
+%    \centering \small
+%    \caption{Simulation parameters ($C=100$~kb/s, packet size 1000 bits).}
+%    \label{tab:ppl-params}
+%    \begin{tabular}{lccccc}
+%        Part & \texttt{sourcetype} & $\lambda_1,\lambda_2$ (pkt/s) & Priorities & $\rho$ & \texttt{endTime} (s) \\
+%        \hline
+%        7a & 1 & 10, 20 & 1, 1 & 0.3  & 1000 \\
+%        7a & 1 & 30, 60 & 1, 1 & 0.9  & \todo{?} \\
+%        7b & 2 & 10, 20 & 1, 1 & 0.3  & 1000 \\
+%        7b & 2 & 30, 60 & 1, 1 & 0.9  & \todo{?} \\
+%        7c & 2 & 10, 85 & 1, 2 & 0.95 & \todo{?} \\
+%    \end{tabular}
+%\end{table}
 
-\subsubsection{.c}
+\subsubsection{a. Poisson arrivals, exponential packet sizes}
+
+\textbf{Approach:} Both flows have the same priority and share one FIFO queue.
+The sum of two Poisson flows is Poisson and the sizes are exponential, so this is
+an M/M/1 queue with $\lambda=\lambda_1+\lambda_2$ and
+$W=1/(\mu-\lambda)$, equal for both flows.
+
+%\begin{table}[H]
+%    \centering
+%    \caption{Average delay, M/M/1 (simulation: mean $\pm$ 95\% CI half-width).}
+%    \label{tab:ppl-mm1}
+%    \begin{tabular}{cc|ccc}
+%        $\rho$ & Flow & Theory (ms) & Simulation (ms) & Rel.\ err.\ (\%) \\
+%        \hline
+%        0.3 & 1 & 14.29 & $14.47\pm\todo{hw}$ & $+1.3$ \\
+%        0.3 & 2 & 14.29 & $14.84\pm\todo{hw}$ & $+3.9$ \\
+%        0.9 & 1 & 100.0 & \todo{?} & \todo{?} \\
+%        0.9 & 2 & 100.0 & \todo{?} & \todo{?} \\
+%    \end{tabular}
+%\end{table}
+
+\textbf{Conclusion:} The delay grows seven-fold when $\rho$ goes from 0.3 to 0.9,
+as predicted by $W=1/(\mu-\lambda)$. At light load the simulation is within 4\%
+of theory. Both flows have the same theoretical delay (FIFO does not
+distinguish them), so the gap between their estimates (14.47 vs.\ 14.84~ms)
+shows the level of simulation noise. Throughput equals the offered load
+(9985 and 20199 vs.\ 10000 and 20000~bit/s), as expected in a stable system.
+%\todo{Add one sentence on the agreement at $\rho=0.9$.}
+
+\subsubsection{b. Poisson arrivals, fixed packet sizes}
+
+\textbf{Approach:} Same arrival rates and mean packet size, but every service
+time equals $S=10$~ms, so this is an M/D/1 queue:
+$W_q=\dfrac{\rho S}{2(1-\rho)}$ and $W=S+W_q$.
+
+%\begin{table}[H]
+%    \centering
+%    \caption{Average delay, M/D/1 (simulation: mean $\pm$ 95\% CI half-width).}
+%    \label{tab:ppl-md1}
+%    \begin{tabular}{cc|ccc}
+%        $\rho$ & Flow & Theory (ms) & Simulation (ms) & Rel.\ err.\ (\%) \\
+%        \hline
+%        0.3 & 1 & 12.14 & $12.05\pm\todo{hw}$ & $-0.8$ \\
+%        0.3 & 2 & 12.14 & $12.09\pm\todo{hw}$ & $-0.4$ \\
+%        0.9 & 1 & 55.0  & \todo{?} & \todo{?} \\
+%        0.9 & 2 & 55.0  & \todo{?} & \todo{?} \\
+%    \end{tabular}
+%\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{../images/E7_delay_vs_rho.jpeg}
+    \caption{Average delay versus load: theory (lines) and simulation (points).}
+    \label{fig:ppl-delay-rho}
+\end{figure}
+
+\textbf{Exponential vs.\ fixed sizes:} For the same $\lambda$ and mean packet
+size, fixed sizes give a lower delay: 12.1 vs.\ 14.3~ms at $\rho=0.3$ ($-15\%$)
+and 55 vs.\ 100~ms at $\rho=0.9$ ($-45\%$). The simulations confirm the
+ordering (Figure~\ref{fig:ppl-delay-rho}).
+
+\textbf{Impact of the service-time distribution:} By the Pollaczek--Khinchine
+formula, $W_q=\dfrac{\rho S(1+c_S^2)}{2(1-\rho)}$, where $c_S^2$ is the squared
+coefficient of variation of the service time: $c_S^2=1$ for exponential and
+$0$ for fixed sizes. Hence the M/D/1 queuing delay is exactly half of the M/M/1
+one. The average delay depends on the variability of the service time and not
+only on its mean, and the effect grows as $\rho\to1$.
+
+\subsubsection{c. Strict priority scheduling}
+
+\textbf{Approach:} Packets are never interrupted, so this is a non-preemptive
+M/D/1 queue with priorities. Cobham's formula gives, for class $k$,
+\[
+W_k = S + \frac{W_0}{(1-\sigma_{k-1})(1-\sigma_k)}, \qquad
+W_0=\sum_i\frac{\lambda_i S^2}{2}, \qquad \sigma_k=\sum_{i\le k}\rho_i .
+\]
+With $\lambda_1=10$ (priority 1) and $\lambda_2=85$ pkt/s (priority 2),
+$\rho=0.95$ and $W_0=4.75$~ms, so $W_1=15.28$~ms and $W_2=115.56$~ms, a ratio of
+7.6. The default rates (10 and 80) give a ratio of exactly 4.0, too close to the
+required limit.
+
+%\begin{table}[H]
+%    \centering
+%    \caption{Average delay with strict priorities (simulation: mean $\pm$ 95\% CI half-width).}
+%    \label{tab:ppl-prio}
+%    \begin{tabular}{ccc|ccc}
+%        Flow & Priority & $\lambda$ (pkt/s) & Theory (ms) & Simulation (ms) & Rel.\ err.\ (\%) \\
+%        \hline
+%        1 & 1 & 10 & 15.28  & \todo{?} & \todo{?} \\
+%        2 & 2 & 85 & 115.56 & \todo{?} & \todo{?} \\
+%    \end{tabular}
+%\end{table}
+
+\textbf{Conclusion:} Priorities separate the two flows strongly. The
+high-priority flow only waits for the packet in transmission and for packets of
+its own class ($W_q=5.3$~ms), while the low-priority flow absorbs the load
+($W_2\approx 7.6\,W_1$). A FIFO queue at the same load would give both flows
+105~ms. The $\lambda$-weighted mean of the priority delays,
+$(10\cdot15.28+85\cdot115.56)/95=105$~ms, is the same: priorities redistribute the
+delay between flows but do not reduce it. %\todo{Add the agreement of the simulation with theory.}
 
 \section{D. Workloads}
 

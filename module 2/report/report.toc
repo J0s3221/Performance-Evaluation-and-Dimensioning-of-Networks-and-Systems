@@ -12,9 +12,9 @@
 \contentsline {subsection}{\numberline {3.2}Exercise 5: Simulation of a CTMC}{10}{subsection.3.2}%
 \contentsline {section}{\numberline {4}C. Queuing systems}{11}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Exercise 6: Stability of the M/M/1 queue}{11}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}7}{12}{subsection.4.2}%
-\contentsline {subsubsection}{\numberline {4.2.1}.a}{12}{subsubsection.4.2.1}%
-\contentsline {subsubsection}{\numberline {4.2.2}.b}{12}{subsubsection.4.2.2}%
-\contentsline {subsubsection}{\numberline {4.2.3}.c}{12}{subsubsection.4.2.3}%
-\contentsline {section}{\numberline {5}D. Workloads}{12}{section.5}%
-\contentsline {section}{\numberline {6}Conclusion}{12}{section.6}%
+\contentsline {subsection}{\numberline {4.2}Exercise 7: Point-to-point link (\texttt {ppl.R})}{12}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}a. Poisson arrivals, exponential packet sizes}{12}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}b. Poisson arrivals, fixed packet sizes}{12}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}c. Strict priority scheduling}{13}{subsubsection.4.2.3}%
+\contentsline {section}{\numberline {5}D. Workloads}{14}{section.5}%
+\contentsline {section}{\numberline {6}Conclusion}{14}{section.6}%

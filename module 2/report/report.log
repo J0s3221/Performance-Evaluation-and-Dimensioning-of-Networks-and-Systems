@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.24)  20 OCT 2026 16:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.24)  20 OCT 2026 16:27
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -970,27 +970,33 @@ File: ../images/E6_delay_vs_n.jpeg Graphic file (type jpg)
 <use ../images/E6_delay_vs_n.jpeg>
 Package pdftex.def Info: ../images/E6_delay_vs_n.jpeg  used on input line 480.
 (pdftex.def)             Requested size: 362.77264pt x 241.85512pt.
- [11 <../images/E6_delay_vs_n.jpeg>] [12] (./report.aux)
+ [11 <../images/E6_delay_vs_n.jpeg>]
+<../images/E7_delay_vs_rho.jpeg, id=231, 542.025pt x 361.35pt>
+File: ../images/E7_delay_vs_rho.jpeg Graphic file (type jpg)
+<use ../images/E7_delay_vs_rho.jpeg>
+Package pdftex.def Info: ../images/E7_delay_vs_rho.jpeg  used on input line 584.
+(pdftex.def)             Requested size: 362.77264pt x 241.85512pt.
+ [12] [13 <../images/E7_delay_vs_rho.jpeg>] [14] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: B3EFFB77D8C4D57F9B55A32889093C25;3667.
+(rerunfilecheck)             Checksum: F01FF5731E4058E4805DC03966CC490E;4449.
  ) 
 Here is how much of TeX's memory you used:
- 45419 strings out of 474222
- 1090275 string characters out of 5748733
- 1951975 words of memory out of 5000000
- 66960 multiletter control sequences out of 15000+600000
+ 45430 strings out of 474222
+ 1090583 string characters out of 5748733
+ 1952975 words of memory out of 5000000
+ 66968 multiletter control sequences out of 15000+600000
  570660 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  101i,19n,117p,846b,2218s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on report.pdf (13 pages, 1040689 bytes).
+Output written on report.pdf (15 pages, 1083628 bytes).
 PDF statistics:
- 319 PDF objects out of 1000 (max. 8388607)
- 237 compressed objects within 3 object streams
- 47 named destinations out of 1000 (max. 500000)
- 344 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 331 PDF objects out of 1000 (max. 8388607)
+ 246 compressed objects within 3 object streams
+ 50 named destinations out of 1000 (max. 500000)
+ 349 words of extra memory for PDF output out of 10000 (max. 10000000)
 
