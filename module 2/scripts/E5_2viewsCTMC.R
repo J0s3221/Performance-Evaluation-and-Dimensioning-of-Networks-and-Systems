@@ -1,50 +1,68 @@
+# CTMC of Figure 2: rates l12 = 2, l21 = l23 = l31 = l32 = 1 (generator matrix Q)
 Q <- matrix(c(-2,  2,  0,
                1, -2,  1,
-               1,  1, -2),
-            nrow = 3, byrow = TRUE)
+               1,  1, -2), nrow = 3, byrow = TRUE)
 
-A <- t(Q)
-A[3, ] <- 1
+# Theory: solve pi Q = 0 with sum(pi) = 1 (last equation replaced)
+A <- t(Q); A[3, ] <- 1
 pi_theory <- solve(A, c(0, 0, 1))
 
-sim_view1 <- function(Q, n_jumps, start = 1) {
-  m <- nrow(Q)
-  q <- -diag(Q)
-  state <- start
-  time_in <- numeric(m)
+# View 1: hold in state i for Exp(q_i), then jump to j with probability q_ij / q_i
+sim_view1 <- function(Q, n_jumps, warmup = 0, start = 1) {
+  m <- nrow(Q); q <- -diag(Q)
+  state <- start; clock <- 0
+  time_in <- numeric(m); jump_time <- numeric(n_jumps); jump_state <- integer(n_jumps)
   for (k in 1:n_jumps) {
-    h <- rexp(1, rate = q[state])          # holding time
-    time_in[state] <- time_in[state] + h
-    p <- Q[state, ]; p[state] <- 0
-    p <- p / q[state]                      # jump probabilities
+    jump_time[k] <- clock; jump_state[k] <- state
+    h <- rexp(1, rate = q[state])                       # holding time
+    if (k > warmup) time_in[state] <- time_in[state] + h
+    clock <- clock + h
+    p <- Q[state, ]; p[state] <- 0                      # jump probs (sample() normalizes)
     state <- sample(1:m, 1, prob = p)
   }
-  time_in / sum(time_in)
+  list(pi = time_in / sum(time_in), t = jump_time, s = jump_state)
 }
 
-sim_view2 <- function(Q, n_jumps, start = 1) {
+# View 2: one Exp(q_ij) timer per possible transition; the smallest timer wins
+sim_view2 <- function(Q, n_jumps, warmup = 0, start = 1) {
   m <- nrow(Q)
-  state <- start
-  time_in <- numeric(m)
+  state <- start; clock <- 0
+  time_in <- numeric(m); jump_time <- numeric(n_jumps); jump_state <- integer(n_jumps)
   for (k in 1:n_jumps) {
+    jump_time[k] <- clock; jump_state[k] <- state
     rates <- Q[state, ]; rates[state] <- 0
-    t <- rep(Inf, m)
-    idx <- which(rates > 0)
-    t[idx] <- rexp(length(idx), rate = rates[idx])
-    nxt <- which.min(t)
-    time_in[state] <- time_in[state] + t[nxt]
+    timers <- rep(Inf, m); pos <- rates > 0
+    timers[pos] <- rexp(sum(pos), rate = rates[pos])    # competing timers
+    nxt <- which.min(timers); h <- timers[nxt]
+    if (k > warmup) time_in[state] <- time_in[state] + h
+    clock <- clock + h
     state <- nxt
   }
-  time_in / sum(time_in)
+  list(pi = time_in / sum(time_in), t = jump_time, s = jump_state)
 }
 
+# R independent runs per view, 95% Student-t confidence intervals
 set.seed(1)
-N <- 1e6
-pi_v1 <- sim_view1(Q, N)
-pi_v2 <- sim_view2(Q, N)
+R <- 30; n_jumps <- 1e5; warmup <- 1e3
+est1 <- t(replicate(R, sim_view1(Q, n_jumps, warmup)$pi))
+est2 <- t(replicate(R, sim_view2(Q, n_jumps, warmup)$pi))
+hw <- function(est) qt(0.975, R - 1) * apply(est, 2, sd) / sqrt(R)
 
-results <- rbind("Theory (solve)" = pi_theory,
-                 "Simulation view 1" = pi_v1,
-                 "Simulation view 2" = pi_v2)
-colnames(results) <- c("pi_1", "pi_2", "pi_3")
-print(round(results, 4))
+results <- data.frame(state = 1:3, theory = pi_theory,
+                      view1 = colMeans(est1), hw1 = hw(est1),
+                      view2 = colMeans(est2), hw2 = hw(est2))
+results$inside1 <- abs(results$view1 - results$theory) <= results$hw1
+results$inside2 <- abs(results$view2 - results$theory) <= results$hw2
+print(results, digits = 4, row.names = FALSE)
+
+# Figure: sample paths of both views (first 40 jumps)
+plot_path <- function(p, title) {
+  plot(p$t, p$s, type = "s", lwd = 2, yaxt = "n", xlab = "time", ylab = "state", main = title)
+  axis(2, at = 1:3)
+}
+
+jpeg("E5_paths.jpeg", width = 1000, height = 650, res = 120)
+par(mfrow = c(2, 1), mar = c(4, 4, 2, 1))
+plot_path(sim_view1(Q, 40), "View 1: holding time, then jump")
+plot_path(sim_view2(Q, 40), "View 2: competing timers")
+dev.off()

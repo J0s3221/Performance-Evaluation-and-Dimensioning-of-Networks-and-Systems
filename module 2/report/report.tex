@@ -251,22 +251,37 @@ The fitted chain estimates an attack probability of approximately $0.3997$ in st
 
 \subsubsection{Discrete-event simulation}
 
-\textbf{Approach:} The same script runs one slot at a time. Each user attempts with the probability associated with its state. If exactly one user transmits, the slot is successful and a successful backlogged user returns to THINKING. If two or more transmit, there is a collision and each transmitting THINKING user becomes BACKLOGGED; existing backlogged users remain so. After a warm-up of 100,000 slots, throughput is estimated over 1,000,000 slots. The theoretical reference is computed by \texttt{aloha\_theo()}.
+\textbf{Approach:} Users are statistically identical, so the state is only
+the backlog size $n$. In each slot, $T\sim\mathrm{Bin}(N-n,\sigma)$ THINKING
+and $B\sim\mathrm{Bin}(n,p)$ BACKLOGGED users transmit. If $T+B=1$ the slot is
+a success ($n\to n-1$ if $B=1$); otherwise $n\to n+T$, since colliding
+THINKING users become BACKLOGGED. Throughput is the fraction of successful
+slots. We ran $R=20$ independent replications of $2\times10^5$ slots
+(after $10^4$ warm-up slots) and computed 95\% Student-$t$ confidence
+intervals. The theoretical values come from \texttt{aloha\_theo()}.
 
 \begin{table}[H]
     \centering
-    \caption{Theoretical and simulated throughput for three operating points.}
+    \caption{Theoretical and simulated throughput ($N=10$; simulation: mean $\pm$ 95\% CI half-width).}
     \label{tab:aloha-comparison}
-    \begin{tabular}{rrrrr}
-        $N$ & $\sigma$ & $p$ & Theoretical & Simulation \\
+    \begin{tabular}{rrr|rcrc}
+        $N$ & $\sigma$ & $p$ & Theory & Simulation & Rel.\ err.\ (\%) & Theory in CI? \\
         \hline
-        10 & 0.001 & 0.3 & 0.01000 & 0.01004 \\
-        10 & 0.100 & 0.3 & 0.16415 & 0.16309 \\
-        10 & 0.100 & 0.6 & 0.00160 & 0.00157 \\
+        10 & 0.001 & 0.3 & 0.01000 & $0.01001 \pm 0.00011$ & $+0.09$ & yes \\
+        10 & 0.050 & 0.3 & 0.31541 & $0.31608 \pm 0.00125$ & $+0.21$ & yes \\
+        10 & 0.100 & 0.3 & 0.16415 & $0.16445 \pm 0.00040$ & $+0.18$ & yes \\
+        10 & 0.100 & 0.6 & 0.00160 & $0.00158 \pm 0.00004$ & $-1.10$ & yes \\
     \end{tabular}
 \end{table}
 
-\textbf{Results and conclusion:} The simulated estimates are close to their theoretical values for all three configurations. The results illustrate the sensitivity to the offered load and retransmission probability: the middle setting has the highest throughput, while raising $p$ to $0.6$ at the same $\sigma$ leaves more users contending in the backlog and substantially reduces successful transmissions.
+\textbf{Conclusion:} The theoretical value lies inside the confidence interval
+in all four cases. The relative errors are below 0.3\% for the first three
+cases. The last one is about $-1.1\%$, which is within the CI (its half-width is
+about 2\% of the mean) because the throughput is so low that few successes
+are observed. The four operating points span two orders of magnitude, from
+light load ($\approx N\sigma$) to a collapsed system where most users are
+backlogged. Raising $\sigma$ from 0.05 to 0.1 halves the throughput, and raising
+$p$ from 0.3 to 0.6 at $\sigma=0.1$ reduces it by a factor of about 100.
 
 \subsubsection{ALOHA vs.\ CSMA, CSMA/CD and CSMA/CA}
 
@@ -343,9 +358,109 @@ Kurose \& Ross, \emph{Computer Networking}.
 
 \section{B. Discrete-time Markov chains and Continuous-time Markov chains}
 
-\subsection{4}
+\subsection{Exercise 4: Limiting probabilities of a DTMC}
 
-\subsection{5}
+\textbf{Approach:}
+\begin{itemize}
+    \item \textbf{(i) Balance equations:} solve $\pi P=\pi$, $\sum_i\pi_i=1$ as
+    the linear system $(P^{T}-I)\pi=0$, with its last equation replaced by
+    $\sum_i\pi_i=1$ (\texttt{solve()}).
+    \item \textbf{(ii) Matrix power:} compute $P^{n}$ with \texttt{expm}
+    (\texttt{P \%\^{}\% n}). For large $n$ all rows converge to $\pi$.
+    \item \textbf{(iii) Simulation:} starting in state 0, each step draws the
+    next state with \texttt{sample()} using the row of $P$ of the current
+    state. $\pi_i$ is the fraction of time in state $i$ after a warm-up of
+    $10^3$ steps; we ran 30 independent runs of $10^5$ steps and computed
+    95\% Student-$t$ confidence intervals.
+\end{itemize}
+
+\textbf{Results:}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../images/E4_convergence.jpeg}
+    \caption{First row of $P^n$ versus $n$. Dotted lines: solution of the balance equations.}
+    \label{fig:dtmc-conv}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{Limiting state probabilities (simulation: mean $\pm$ 95\% CI half-width).}
+    \label{tab:dtmc-limiting}
+    \begin{tabular}{l|ccc}
+        Method & $\pi_0$ & $\pi_1$ & $\pi_2$ \\
+        \hline
+        Balance equations     & 0.2593 & 0.1481 & 0.5926 \\
+        Matrix power ($n=50$) & 0.2593 & 0.1481 & 0.5926 \\
+        Simulation            & $0.2597\pm0.0007$ & $0.1479\pm0.0002$ & $0.5924\pm0.0008$ \\
+    \end{tabular}
+\end{table}
+
+\textbf{Conclusion:} The three methods agree. The balance equations give
+$\pi_1=\tfrac47\pi_0$ and $\pi_2=4\pi_1$, hence $\pi=(7,4,16)/27$. The rows of
+$P^n$ converge to $\pi$ after about 10 steps (Figure~\ref{fig:dtmc-conv}),
+because the second-largest eigenvalue modulus of $P$ is $\approx0.37$, so the
+error shrinks as $0.37^n$; at $n=50$ all rows equal $\pi$ to within $10^{-15}$.
+The simulation estimates are within 0.2\% of the exact values. The confidence
+intervals of $\pi_0$ and $\pi_2$ contain the exact values, while that of
+$\pi_1$ narrowly misses it. This is expected: with three 95\% intervals, one
+miss is not unusual, and the discrepancy is negligible in practice.
+State~2 dominates ($\approx59\%$) because it is easy to enter (from states 0
+and 1) and hard to leave (self-loop 0.8), while state~1 is the rarest: it is
+only entered from state~2 with probability 0.2.
+
+\subsection{Exercise 5: Simulation of a CTMC}
+
+\textbf{Approach:} The chain of Figure~2 has generator matrix
+\[
+Q=\begin{bmatrix} -2 & 2 & 0\\ 1 & -2 & 1\\ 1 & 1 & -2 \end{bmatrix}.
+\]
+\emph{Theory:} the limiting probabilities solve $\pi Q=0$, $\sum_i\pi_i=1$,
+as a linear system in which the last equation is replaced by $\sum_i\pi_i=1$
+(\texttt{solve()}). \emph{Simulation:} the CTMC was simulated in two equivalent ways.
+\begin{itemize}
+    \item \textbf{View 1:} the chain stays in state $i$ for an exponential time
+    with rate $q_i=\sum_{j\neq i}\lambda_{ij}$, then jumps to state $j$ with
+    probability $\lambda_{ij}/q_i$.
+    \item \textbf{View 2:} each possible transition $i\to j$ has an independent
+    exponential timer with rate $\lambda_{ij}$; the smallest timer fires, and
+    the chain moves to the corresponding state.
+\end{itemize}
+In both cases $\pi_i$ is estimated as the fraction of time spent in state $i$.
+We ran 30 independent runs of $10^5$ jumps each (after $10^3$ warm-up jumps),
+starting in state~1, and computed 95\% Student-$t$ confidence intervals.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{../images/E5_paths.jpeg}
+    \caption{Sample paths of the CTMC generated with each view (first 40 jumps).}
+    \label{fig:ctmc-paths}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{Limiting state probabilities (simulation: mean $\pm$ 95\% CI half-width).}
+    \label{tab:ctmc-limiting}
+    \begin{tabular}{l|ccc}
+        Method & $\pi_1$ & $\pi_2$ & $\pi_3$ \\
+        \hline
+        Theory ($\pi Q=0$) & 0.3333 & 0.4444 & 0.2222 \\
+        Simulation, view 1 & $0.3333\pm0.0007$ & $0.4444\pm0.0006$ & $0.2222\pm0.0006$ \\
+        Simulation, view 2 & $0.3333\pm0.0007$ & $0.4446\pm0.0005$ & $0.2220\pm0.0007$ \\
+    \end{tabular}
+\end{table}
+
+\textbf{Conclusion:} Solving $\pi Q=0$ gives $\pi_3=\pi_2/2$ and
+$\pi_1=\tfrac32\pi_3$, hence $\pi=(3,4,2)/9$. Both views reproduce this result,
+with the exact values inside the confidence intervals. This is expected, since
+the two views describe the same process: the minimum of independent
+exponentials with rates $\lambda_{ij}$ is exponential with rate $q_i$, and
+the winning timer is $j$ with probability $\lambda_{ij}/q_i$. Here all states
+have the same exit rate $q_i=2$ (mean holding time 0.5), so the fraction of time
+in each state equals the fraction of visits to it. State~2 is the most
+frequent because it is the only exit of state~1 and is reachable from both
+other states, while state~3 is entered only from state~2, and only half of the
+time.
 
 \section{C. Queuing systems}
 
