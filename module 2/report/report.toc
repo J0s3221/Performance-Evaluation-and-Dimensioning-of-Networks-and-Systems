@@ -1,20 +1,20 @@
 \babel@toc {english}{}\relax 
 \contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
 \contentsline {section}{\numberline {2}A. Discrete-time Markov chains}{3}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Bernoulli and 2-DTMC sample paths}{3}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Estimating transitions from the attack trace}{4}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Slotted ALOHA}{4}{subsection.2.3}%
-\contentsline {subsubsection}{\numberline {2.3.1}Theoretical throughput}{4}{subsubsection.2.3.1}%
-\contentsline {subsubsection}{\numberline {2.3.2}Discrete-event simulation}{6}{subsubsection.2.3.2}%
-\contentsline {subsubsection}{\numberline {2.3.3}ALOHA vs.\ CSMA, CSMA/CD and CSMA/CA}{7}{subsubsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.1}Exercise 1: Bernoulli and 2-DTMC sample paths}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Exercise 2: Estimating transitions from the attack trace}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Exercise 3: Slotted ALOHA}{4}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}a. Theoretical throughput}{4}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}b. Discrete-event simulation}{6}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}c. ALOHA vs.\ CSMA, CSMA/CD and CSMA/CA}{7}{subsubsection.2.3.3}%
 \contentsline {section}{\numberline {3}B. Discrete-time Markov chains and Continuous-time Markov chains}{8}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Exercise 4: Limiting probabilities of a DTMC}{8}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Exercise 5: Simulation of a CTMC}{10}{subsection.3.2}%
 \contentsline {section}{\numberline {4}C. Queuing systems}{11}{section.4}%
-\contentsline {subsection}{\numberline {4.1}6}{11}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}7}{11}{subsection.4.2}%
-\contentsline {subsubsection}{\numberline {4.2.1}.a}{11}{subsubsection.4.2.1}%
-\contentsline {subsubsection}{\numberline {4.2.2}.b}{11}{subsubsection.4.2.2}%
-\contentsline {subsubsection}{\numberline {4.2.3}.c}{11}{subsubsection.4.2.3}%
-\contentsline {section}{\numberline {5}D. Workloads}{11}{section.5}%
-\contentsline {section}{\numberline {6}Conclusion}{11}{section.6}%
+\contentsline {subsection}{\numberline {4.1}Exercise 6: Stability of the M/M/1 queue}{11}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}7}{12}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}.a}{12}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}.b}{12}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}.c}{12}{subsubsection.4.2.3}%
+\contentsline {section}{\numberline {5}D. Workloads}{12}{section.5}%
+\contentsline {section}{\numberline {6}Conclusion}{12}{section.6}%

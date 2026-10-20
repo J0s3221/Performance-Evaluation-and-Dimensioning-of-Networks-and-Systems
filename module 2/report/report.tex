@@ -169,7 +169,7 @@ This report presents the solutions to the three exercises assigned to class~5 in
 
 \section{A. Discrete-time Markov chains}
 
-\subsection{Bernoulli and 2-DTMC sample paths}
+\subsection{Exercise 1: Bernoulli and 2-DTMC sample paths}
 
 \textbf{Objective:} Compare Bernoulli processes with two-state discrete-time Markov chains (2-DTMCs) using two parameter pairs that have the same stationary mean but markedly different temporal behavior.
 
@@ -196,7 +196,7 @@ For $(\alpha,\beta)=(0.9,0.1)$, the helper generates 200 DTMC samples and an ind
 
 \textbf{Results and conclusion:} Since $\alpha=0.9$, the DTMC tends to remain in its current state, producing longer runs than the independent Bernoulli process. Both processes have stationary mean $0.5$, but only the DTMC has temporal dependence. This illustrates why a Markov model can represent clustering in a sequence that an independent Bernoulli model cannot.
 
-\subsection{Estimating transitions from the attack trace}
+\subsection{Exercise 2: Estimating transitions from the attack trace}
 
 \textbf{Objective:} Estimate the transition probabilities of a 2-DTMC from the sequence of daily server attack indicators in \texttt{2dtmcdata.txt}.
 
@@ -225,11 +225,11 @@ For $(\alpha,\beta)=(0.9,0.1)$, the helper generates 200 DTMC samples and an ind
 \]
 The fitted chain estimates an attack probability of approximately $0.3997$ in steady state. An attack is followed by another attack with estimated probability $0.2778$; otherwise, the process returns to the non-attacked state with probability $0.7222$. These are empirical estimates from this finite trace, rather than known properties of all server attacks.
 
-\subsection{Slotted ALOHA}
+\subsection{Exercise 3: Slotted ALOHA}
 
 \textbf{Objective:} Study the theoretical and simulated throughput of slotted ALOHA with a finite number of users, explain the effect of the parameters $N$, $\sigma$, and $p$, and compare ALOHA with carrier-sensing protocols.
 
-\subsubsection{Theoretical throughput}
+\subsubsection{a. Theoretical throughput}
 
 \textbf{Approach:} The supplied \texttt{aloha\_plot.R} script uses \texttt{aloha\_theo()} to plot theoretical throughput versus $\sigma$. With $N=10$, it plots four curves for $p$: 0.3, 0.4, 0.5, and 0.6. With $N=25$, it plots $p=0.2$ and $p=0.3$. In both plots, $\sigma$ is logarithmically spaced as specified in the script.
 
@@ -249,7 +249,7 @@ The fitted chain estimates an attack probability of approximately $0.3997$ in st
 
 \textbf{Results and conclusion:} Increasing $\sigma$ makes more THINKING users transmit. Throughput can first increase as successful attempts become more frequent, then decrease when the added attempts create more collisions and BACKLOGGED users. Increasing $p$ makes BACKLOGGED users retry more often; this can clear a small backlog, but can also increase collisions when many users are waiting. Increasing $N$ adds potential transmissions and contention, so throughput depends on the interaction between $N$, $p$, and $\sigma$, rather than increasing monotonically with any one parameter.
 
-\subsubsection{Discrete-event simulation}
+\subsubsection{b. Discrete-event simulation}
 
 \textbf{Approach:} Users are statistically identical, so the state is only
 the backlog size $n$. In each slot, $T\sim\mathrm{Bin}(N-n,\sigma)$ THINKING
@@ -283,7 +283,7 @@ light load ($\approx N\sigma$) to a collapsed system where most users are
 backlogged. Raising $\sigma$ from 0.05 to 0.1 halves the throughput, and raising
 $p$ from 0.3 to 0.6 at $\sigma=0.1$ reduces it by a factor of about 100.
 
-\subsubsection{ALOHA vs.\ CSMA, CSMA/CD and CSMA/CA}
+\subsubsection{c. ALOHA vs.\ CSMA, CSMA/CD and CSMA/CA}
 
 \textbf{Approach:} Random-access throughput is limited by collisions. The
 protocols differ in (i) how long a frame is exposed to collisions (the
@@ -464,7 +464,49 @@ time.
 
 \section{C. Queuing systems}
 
-\subsection{6}
+\subsection{Exercise 6: Stability of the M/M/1 queue}
+
+\textbf{Approach:} We simulated an M/M/1 queue and measured the average queuing
+delay over the first \texttt{NumQueueCompleted} customers served
+(including those with zero delay), for three run lengths: $10^3$, $10^4$
+and $10^5$. Loads: $\rho=1$ ($\lambda=\mu=1$) and $\rho=2$ ($\lambda=2$, $\mu=1$),
+plus a stable reference $\rho=0.5$ ($\lambda=1$, $\mu=2$), whose theoretical delay is
+$\rho/(\mu-\lambda)=0.5$. Each point is the mean of 20 independent runs, with 95\%
+Student-$t$ confidence intervals. No warm-up was used since the purpose
+is to observe the transient growth.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{../images/E6_delay_vs_n.jpeg}
+    \caption{Average queuing delay versus run length (log-log). Dotted line: theoretical delay for $\rho=0.5$.}
+    \label{fig:mm1-stability}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{Average queuing delay (mean $\pm$ 95\% CI half-width, 20 runs).}
+    \label{tab:mm1-stability}
+    \begin{tabular}{r|ccc}
+        \texttt{NumQueueCompleted} & $\rho=0.5$ & $\rho=1$ & $\rho=2$ \\
+        \hline
+        $10^3$ & $0.525\pm0.037$ & $27.4\pm8.3$ & $251\pm12$ \\
+        $10^4$ & $0.500\pm0.019$ & $74.5\pm17.6$ & $2503\pm28$ \\
+        $10^5$ & $0.502\pm0.005$ & $190.6\pm48.4$ & $24980\pm94$ \\
+    \end{tabular}
+\end{table}
+
+\textbf{Conclusion:} For $\rho=0.5$ the estimate converges to the theoretical
+value 0.5 as the run grows, so the system has a steady state. For $\rho\ge1$ it does
+not: the estimate keeps increasing with the run length, so the system is
+\emph{not stable}. At $\rho=1$ the delay grows roughly as $\sqrt{n}$ (by a factor
+of about 2.6 per decade of $n$, compatible with $\sqrt{10}\approx3.2$ given the
+confidence intervals), and the relative width of the interval stays around
+25--30\%, so the estimate does not converge to a long-run average. At $\rho=2$ the queue
+grows without bound and the delay grows linearly in $n$: the values 251, 2503
+and 24980 agree with the prediction $n/4$ for $\lambda=2$, $\mu=1$. The
+confidence intervals are narrow, but the estimates are not long-run averages,
+since they just reflect the run length. Therefore steady-state performance
+measures only make sense for $\rho<1$.
 
 \subsection{7}
 
