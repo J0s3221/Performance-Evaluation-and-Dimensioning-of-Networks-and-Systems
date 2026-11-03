@@ -2,6 +2,15 @@
 #This is the routine where the user defines the input parameters of the
 #simulator
 
+st1 = 2
+st2 = 2
+
+ar1 = 10
+ar2 = 80
+
+prior1 = 1
+prior2 = 2
+
 parameters = function() {
 
   #Capacity of the link, in bits/sec
@@ -14,10 +23,18 @@ parameters = function() {
   # distributed sizes; 2 = Poisson arrivals and fixed sizes. The levels of
   # priority must be consecutive integers starting at 1, where a lower number
   # corresponds to a higher priority.
-  Flows<<-list(list(sourcetype=2,arrivalrate=10,packetsize=1000,priority=1),
-               list(sourcetype=2,arrivalrate=80,packetsize=1000,priority=2))
+  Flows<<-list(list(sourcetype=st1,arrivalrate=ar1,packetsize=1000,priority=prior1),
+               list(sourcetype=st2,arrivalrate=ar2,packetsize=1000,priority=prior2))
 
   #Definition of the simulation end time, function of the minimum arrival rate
   endTime<<-10000*(1/10)
 
+
+  cat("Sourcetype flow 1:",st1,"\n")
+  cat("Sourcetype flow 2:",st2,"\n")
+  cat("arrival rate flow 1:",ar1,"\n")
+  cat("arrival rate flow 2:",ar2,"\n")
+  cat("priority flow 1:",prior1,"\n")
+  cat("priority flow 2:",prior2,"\n")
+  cat("\n")
 }

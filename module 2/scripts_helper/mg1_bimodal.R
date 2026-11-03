@@ -5,7 +5,7 @@
 Ro=0.5 #system utilization
 s1=1;p1=0.99 #mice (size and probability)
 s2=101;p2=0.01 #elephants (size and probability)
-StoppingCondition=10000
+StoppingCondition=1000000
 
 #parameters calculated from the input parameters
 ServiceRate=1/(s1*p1+s2*p2)
