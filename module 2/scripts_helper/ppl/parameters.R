@@ -6,9 +6,9 @@ st1 = 2
 st2 = 2
 
 ar1 = 10
-ar2 = 80
+ar2 = 20
 
-prior1 = 1
+prior1 = 2
 prior2 = 2
 
 parameters = function() {
@@ -36,5 +36,6 @@ parameters = function() {
   cat("arrival rate flow 2:",ar2,"\n")
   cat("priority flow 1:",prior1,"\n")
   cat("priority flow 2:",prior2,"\n")
+  cat("Endtime:", endTime,"\n")
   cat("\n")
 }

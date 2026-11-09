@@ -1,117 +1,87 @@
-#Compares M/M/1 and M/G/1 with bimodal service distribution, in terms of average
-#queuing delay, for the same arrival rate and mean service rate
+# All systems: E[S] = 2, rho = 0.5  =>  lambda = 0.25
+ES <- 2; lambda <- 0.5 / ES
+n_comp <- 1e5; R <- 100                       # completions per run, replications
 
-#input parameters
-Ro=0.5 #system utilization
-s1=1;p1=0.9 #mice (size and probability)
-s2=11;p2=0.1 #elephants (size and probability)
-StoppingCondition=1000000
+draw_exp  <- function() rexp(1, rate = 1 / ES)                  # M/M/1
+draw_bim1 <- function() ifelse(runif(1) < 0.90, 1, 11)          # mice 1, elephants 11
+draw_bim2 <- function() ifelse(runif(1) < 0.99, 1, 101)         # mice 1, elephants 101
 
-#parameters calculated from the input parameters
-ServiceRate=1/(s1*p1+s2*p2)
-ArrivalRate=ServiceRate*Ro
-
-#M/M/1
-simMM1 <- function(){
-    Time=0
-    NumQueueCompleted=0
-    ServerStatus=0
-    NumInQueue=0
-    AcumDelay=0
-    QueueArrivalTime=c()
-    EventList=c(rexp(1,ArrivalRate),Inf)
-    #simulation cycle
-    while (NumQueueCompleted<StoppingCondition) {
-      NextEventType=which.min(EventList)
-      Time=EventList[NextEventType]
-      if (NextEventType==1) {
-        EventList[1]=Time+rexp(1,ArrivalRate)
-        if (ServerStatus==1) {
-          QueueArrivalTime=c(QueueArrivalTime,Time)
-          NumInQueue=NumInQueue+1}
-        else{
-          NumQueueCompleted=NumQueueCompleted+1
-          ServerStatus=1
-          EventList[2]=Time+rexp(1,ServiceRate)}
-      }
-      else {
-        if (NumInQueue==0) {
-          ServerStatus=0
-          EventList[2]=Inf}
-        else{
-          AcumDelay=AcumDelay+Time-QueueArrivalTime[1]
-          QueueArrivalTime=QueueArrivalTime[-1]
-          NumInQueue=NumInQueue-1
-          NumQueueCompleted=NumQueueCompleted+1
-          EventList[2]=Time+rexp(1,ServiceRate)}
-      }
+# FIFO M/G/1: average queuing delay of the first n customers served
+sim_fifo <- function(draw_size, lambda, n) {
+  time <- 0; n_done <- 0; busy <- FALSE; acum <- 0
+  qa <- numeric(2 * n); qs <- numeric(2 * n); head <- 1; tail <- 0   # arrival times, sizes
+  events <- c(rexp(1, lambda), Inf)                                  # (arrival, departure)
+  while (n_done < n) {
+    type <- which.min(events); time <- events[type]
+    if (type == 1) {                                  # arrival
+      events[1] <- time + rexp(1, lambda)
+      size <- draw_size()
+      if (busy) { tail <- tail + 1; qa[tail] <- time; qs[tail] <- size }
+      else      { busy <- TRUE; n_done <- n_done + 1; events[2] <- time + size }
+    } else if (head > tail) {                         # departure, empty queue
+      busy <- FALSE; events[2] <- Inf
+    } else {                                          # departure, next job starts
+      acum <- acum + time - qa[head]; events[2] <- time + qs[head]
+      head <- head + 1; n_done <- n_done + 1
     }
-    AvgDelayMM1=AcumDelay/NumQueueCompleted
+  }
+  acum / n_done
 }
 
-#M/G/1 Bimodal
-simBimodal <- function(){
-    Time=0
-    NumQueueCompleted=0
-    ServerStatus=0
-    NumInQueue=0
-    AcumDelay=0
-    QueueArrivalTime=c()
-    QueueJobSize=c()
-    EventList=c(rexp(1,ArrivalRate),Inf)
-    #simulation cycle
-    while (NumQueueCompleted<StoppingCondition) {
-      NextEventType=which.min(EventList)
-      Time=EventList[NextEventType]
-      if (NextEventType==1) {
-        EventList[1]=Time+rexp(1,ArrivalRate)
-        JobSize=ifelse(runif(1)<p1,s1,s2)
-        if (ServerStatus==1) {
-          QueueArrivalTime=c(QueueArrivalTime,Time)
-          QueueJobSize=c(QueueJobSize,JobSize)
-          NumInQueue=NumInQueue+1
-          } else{
-          NumQueueCompleted=NumQueueCompleted+1
-          ServerStatus=1
-          EventList[2]=Time+JobSize
-          }
-      }
+# Same system, but mice (size = mouse_size) have non-preemptive priority over elephants
+sim_prio <- function(draw_size, mouse_size, lambda, n) {
+  time <- 0; n_done <- 0; busy <- FALSE; acum <- 0
+  qa <- matrix(0, 2 * n, 2); qs <- matrix(0, 2 * n, 2)    # column 1 = mice, 2 = elephants
+  head <- c(1, 1); tail <- c(0, 0)
+  events <- c(rexp(1, lambda), Inf)
+  while (n_done < n) {
+    type <- which.min(events); time <- events[type]
+    if (type == 1) {                                  # arrival
+      events[1] <- time + rexp(1, lambda)
+      size <- draw_size(); k <- if (size == mouse_size) 1 else 2
+      if (busy) { tail[k] <- tail[k] + 1; qa[tail[k], k] <- time; qs[tail[k], k] <- size }
+      else      { busy <- TRUE; n_done <- n_done + 1; events[2] <- time + size }
+    } else {                                          # departure
+      k <- which(head <= tail)[1]                     # highest-priority non-empty queue
+      if (is.na(k)) { busy <- FALSE; events[2] <- Inf }
       else {
-        if (NumInQueue==0) {
-          ServerStatus=0
-          EventList[2]=Inf
-          } else {
-          AcumDelay=AcumDelay+Time-QueueArrivalTime[1]
-          JobSize=QueueJobSize[1]
-          QueueArrivalTime=QueueArrivalTime[-1]
-          QueueJobSize=QueueJobSize[-1]
-          NumInQueue=NumInQueue-1
-          NumQueueCompleted=NumQueueCompleted+1
-          EventList[2]=Time+JobSize
-          }
+        acum <- acum + time - qa[head[k], k]; events[2] <- time + qs[head[k], k]
+        head[k] <- head[k] + 1; n_done <- n_done + 1
       }
     }
-    AvgDelayBimodal=AcumDelay/NumQueueCompleted
+  }
+  acum / n_done
 }
 
-#M/G/1 Pollaczek-Khinchine
-es=s1*p1+s2*p2
-es2=s1^2*p1+s2^2*p2
-wqPK=ArrivalRate*es2/(2*(1-ArrivalRate*es))
-C2PK=es2/es^2-1
+# Theory: Pollaczek-Khinchine (FIFO) and Cobham (priority to mice)
+theory_fifo <- function(s1, p1, s2, p2) lambda * (s1^2*p1 + s2^2*p2) / (2 * (1 - 0.5))
+theory_prio <- function(s1, p1, s2, p2) {
+  W0 <- lambda * (s1^2*p1 + s2^2*p2) / 2; rho_m <- lambda * p1 * s1
+  p1 * W0 / (1 - rho_m) + p2 * W0 / ((1 - rho_m) * (1 - 0.5))
+}
+theory <- c(ES * 0.5 / (1 - 0.5),                      # M/M/1: rho*ES/(1-rho) = 2
+            theory_fifo(1, .9, 11, .1),   theory_prio(1, .9, 11, .1),
+            theory_fifo(1, .99, 101, .01), theory_prio(1, .99, 101, .01))
 
-samplesMM1 = replicate(100, simMM1())
-samplesBim = replicate(100, simBimodal())
-cat(mean(samplesMM1), var(samplesMM1), "\n")
-cat(mean(samplesBim), var(samplesBim), "\n")
+cases <- list("M/M/1"   = function() sim_fifo(draw_exp,  lambda, n_comp),
+              "B1 FIFO" = function() sim_fifo(draw_bim1, lambda, n_comp),
+              "B1 prio" = function() sim_prio(draw_bim1, 1, lambda, n_comp),
+              "B2 FIFO" = function() sim_fifo(draw_bim2, lambda, n_comp),
+              "B2 prio" = function() sim_prio(draw_bim2, 1, lambda, n_comp))
 
-cat(sprintf("Arrival rate = %f",ArrivalRate),"\n")
-cat(sprintf("Service rate = %f",ServiceRate),"\n")
-cat("\n")
-cat(sprintf("Estimated average queuing delay M/M/1 = %f",AvgDelayMM1),"\n")
-cat(sprintf("Theoretical average queuing delay M/M/1 = %f",(ArrivalRate/ServiceRate)/(ServiceRate-ArrivalRate)),"\n")
-cat(sprintf("Squared Coefficient of Variation (Exponential service) = %f",1),"\n")
-cat("\n")
-cat(sprintf("Estimated average queuing delay M/Bimodal/1 = %f",AvgDelayBimodal),"\n")
-cat(sprintf("Theoretical average queuing delay M/Bimodal/1 = %f",wqPK),"\n")
-cat(sprintf("Squared Coefficient of Variation (Bimodal service) = %f",C2PK),"\n")
+set.seed(1)
+samples <- sapply(cases, function(f) replicate(R, f()))        # R x 5 matrix
+
+res <- data.frame(case = names(cases), theory = theory, mean = colMeans(samples),
+                  hw  = qt(0.975, R - 1) * apply(samples, 2, sd) / sqrt(R),
+                  var = apply(samples, 2, var))
+res$rel_err_pct <- 100 * (res$mean - res$theory) / res$theory
+write.csv(res, "E8_results.csv", row.names = FALSE)
+print(res, digits = 4, row.names = FALSE)
+
+# Figure: distribution of the 100 estimates per case (red diamonds = theory)
+jpeg("E8_boxplot.jpeg", width = 1000, height = 600, res = 120)
+boxplot(samples, log = "y", las = 1, ylab = "Average queuing delay (log scale)")
+points(1:5, theory, pch = 18, col = "red", cex = 1.8)
+legend("topleft", legend = "Theory", pch = 18, col = "red")
+dev.off()
