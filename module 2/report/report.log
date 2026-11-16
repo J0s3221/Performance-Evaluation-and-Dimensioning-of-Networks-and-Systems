@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.24)  9 NOV 2026 16:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.24)  16 NOV 2026 17:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -839,155 +839,151 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout5 = `report.toc'.
 
  [1] [2]
-<../images/p3.jpeg, id=184, 2106.87125pt x 2106.87125pt>
-File: ../images/p3.jpeg Graphic file (type jpg)
-<use ../images/p3.jpeg>
-Package pdftex.def Info: ../images/p3.jpeg  used on input line 192.
-(pdftex.def)             Requested size: 338.58632pt x 338.5851pt.
- [3 <../images/p3.jpeg>]
-Overfull \hbox (9.42009pt too wide) in paragraph at lines 234--235
-[]\OT1/cmr/bx/n/12 Approach: \OT1/cmr/m/n/12 The sup-plied \OT1/cmtt/m/n/12 aloha[]plot.R \OT1/cmr/m/n/12 script uses \OT1/cmtt/m/n/12 aloha[]theo() \OT1/cmr/m/n/12 to plot the-o-ret-i-cal through-
- []
-
-<../images/aloha10.jpeg, id=195, 2107.875pt x 2107.875pt>
+<../images/E1_dtmc_a09_b01.jpeg, id=190, 2106.87125pt x 2106.87125pt>
+File: ../images/E1_dtmc_a09_b01.jpeg Graphic file (type jpg)
+<use ../images/E1_dtmc_a09_b01.jpeg>
+Package pdftex.def Info: ../images/E1_dtmc_a09_b01.jpeg  used on input line 224.
+(pdftex.def)             Requested size: 232.17242pt x 232.14233pt.
+<../images/E1_dtmc_a01_b09.jpeg, id=191, 505.6491pt x 505.6491pt>
+File: ../images/E1_dtmc_a01_b09.jpeg Graphic file (type jpg)
+<use ../images/E1_dtmc_a01_b09.jpeg>
+Package pdftex.def Info: ../images/E1_dtmc_a01_b09.jpeg  used on input line 231.
+(pdftex.def)             Requested size: 232.17242pt x 232.16933pt.
+ [3] [4 <../images/E1_dtmc_a09_b01.jpeg> <../images/E1_dtmc_a01_b09.jpeg>]
+<../images/aloha10.jpeg, id=211, 2107.875pt x 2107.875pt>
 File: ../images/aloha10.jpeg Graphic file (type jpg)
 <use ../images/aloha10.jpeg>
-Package pdftex.def Info: ../images/aloha10.jpeg  used on input line 238.
+Package pdftex.def Info: ../images/aloha10.jpeg  used on input line 298.
 (pdftex.def)             Requested size: 411.14528pt x 411.14655pt.
-[4]
-<../images/aloha25.jpeg, id=201, 2107.875pt x 2107.875pt>
+ [5]
+<../images/aloha25.jpeg, id=217, 2107.875pt x 2107.875pt>
 File: ../images/aloha25.jpeg Graphic file (type jpg)
 <use ../images/aloha25.jpeg>
-Package pdftex.def Info: ../images/aloha25.jpeg  used on input line 245.
+Package pdftex.def Info: ../images/aloha25.jpeg  used on input line 305.
 (pdftex.def)             Requested size: 411.14528pt x 411.14655pt.
- [5 <../images/aloha10.jpeg>] [6 <../images/aloha25.jpeg>]
-Package pgfplots info on input line 302: Using 'lua backend=false' for axis: xmode=log unsupported (yet).
+ [6 <../images/aloha10.jpeg>] [7 <../images/aloha25.jpeg>]
+Package pgfplots info on input line 362: Using 'lua backend=false' for axis: xmode=log unsupported (yet).
 
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
+Underfull \hbox (badness 10000) in paragraph at lines 381--381
 []|\OT1/cmr/m/n/10.95 Pure
  []
 
 
-Underfull \hbox (badness 1997) in paragraph at lines 321--322
+Underfull \hbox (badness 1997) in paragraph at lines 381--382
 []|\OT1/cmr/m/n/10.95 Transmit im-me-di-ately; no
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 322--323
+Underfull \hbox (badness 10000) in paragraph at lines 382--383
 []|\OT1/cmr/m/n/10.95 Vulnerable pe-riod $2\OML/cmm/m/it/10.95 T$\OT1/cmr/m/n/10.95 .
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 323--324
+Underfull \hbox (badness 10000) in paragraph at lines 383--384
 []|\OT1/cmr/m/n/10.95 ALOHAnet, Lo-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 324--324
+Underfull \hbox (badness 10000) in paragraph at lines 384--384
 []|\OT1/cmr/m/n/10.95 Slotted
  []
 
 
-Underfull \hbox (badness 5637) in paragraph at lines 324--325
+Underfull \hbox (badness 5637) in paragraph at lines 384--385
 []|\OT1/cmr/m/n/10.95 Same, but only at slot
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 325--326
+Underfull \hbox (badness 10000) in paragraph at lines 385--386
 []|\OT1/cmr/m/n/10.95 Vulnerable pe-riod $\OML/cmm/m/it/10.95 T$\OT1/cmr/m/n/10.95 .
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 326--327
+Underfull \hbox (badness 10000) in paragraph at lines 386--387
 \OT1/cmr/m/n/10.95 cel-lu-lar/satel-lite
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 326--327
+Underfull \hbox (badness 10000) in paragraph at lines 386--387
 \OT1/cmr/m/n/10.95 random-access
  []
 
 
-Underfull \hbox (badness 1087) in paragraph at lines 327--330
+Underfull \hbox (badness 1087) in paragraph at lines 387--390
 \OT1/cmr/m/n/10.95 chan-nel is busy, de-fer (1-
  []
 
 
-Underfull \hbox (badness 1796) in paragraph at lines 332--335
+Underfull \hbox (badness 1796) in paragraph at lines 392--395
 \OT1/cmr/m/n/10.95 send-ing. On a col-li-sion:
  []
 
 
-Underfull \hbox (badness 1205) in paragraph at lines 332--335
+Underfull \hbox (badness 1205) in paragraph at lines 392--395
 \OT1/cmr/m/n/10.95 abort, send a jam sig-nal,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 336--337
+Underfull \hbox (badness 10000) in paragraph at lines 396--397
 []|\OT1/cmr/m/n/10.95 Shared Eth-er-net
  []
 
 
-Underfull \hbox (badness 1158) in paragraph at lines 336--337
+Underfull \hbox (badness 1158) in paragraph at lines 396--397
 \OT1/cmr/m/n/10.95 (IEEE 802.3, hub-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 336--337
+Underfull \hbox (badness 10000) in paragraph at lines 396--397
 \OT1/cmr/m/n/10.95 s/-coax); not in
  []
 
 
-Underfull \hbox (badness 3826) in paragraph at lines 337--340
+Underfull \hbox (badness 3826) in paragraph at lines 397--400
 []|\OT1/cmr/m/n/10.95 Wait for the chan-nel to
  []
 
 
-Underfull \hbox (badness 6364) in paragraph at lines 337--340
+Underfull \hbox (badness 6364) in paragraph at lines 397--400
 \OT1/cmr/m/n/10.95 down a ran-dom back-off,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 340--341
+Underfull \hbox (badness 10000) in paragraph at lines 400--401
 []|\OT1/cmr/m/n/10.95 Fewer col-li-sions than
  []
 
-[7] [8]
-<../images/E4_convergence.jpeg, id=228, 542.025pt x 331.2375pt>
+[8] [9]
+<../images/E4_convergence.jpeg, id=245, 542.025pt x 331.2375pt>
 File: ../images/E4_convergence.jpeg Graphic file (type jpg)
 <use ../images/E4_convergence.jpeg>
-Package pdftex.def Info: ../images/E4_convergence.jpeg  used on input line 381.
+Package pdftex.def Info: ../images/E4_convergence.jpeg  used on input line 445.
 (pdftex.def)             Requested size: 338.58632pt x 206.92183pt.
- [9{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <../images/E4_convergence.jpeg>]
-<../images/E5_paths.jpeg, id=238, 602.25pt x 391.4625pt>
+ [10{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <../images/E4_convergence.jpeg>]
+<../images/E5_paths.jpeg, id=254, 602.25pt x 391.4625pt>
 File: ../images/E5_paths.jpeg Graphic file (type jpg)
 <use ../images/E5_paths.jpeg>
-Package pdftex.def Info: ../images/E5_paths.jpeg  used on input line 435.
+Package pdftex.def Info: ../images/E5_paths.jpeg  used on input line 499.
 (pdftex.def)             Requested size: 362.77264pt x 235.81113pt.
- [10 <../images/E5_paths.jpeg>]
-<../images/E6_delay_vs_n.jpeg, id=245, 542.025pt x 361.35pt>
+ [11 <../images/E5_paths.jpeg>]
+<../images/E6_delay_vs_n.jpeg, id=260, 542.025pt x 361.35pt>
 File: ../images/E6_delay_vs_n.jpeg Graphic file (type jpg)
 <use ../images/E6_delay_vs_n.jpeg>
-Package pdftex.def Info: ../images/E6_delay_vs_n.jpeg  used on input line 480.
+Package pdftex.def Info: ../images/E6_delay_vs_n.jpeg  used on input line 544.
 (pdftex.def)             Requested size: 362.77264pt x 241.85512pt.
- [11 <../images/E6_delay_vs_n.jpeg>] [12]
-<../images/E7_delay_vs_rho.jpeg, id=260, 542.025pt x 361.35pt>
+ [12] [13 <../images/E6_delay_vs_n.jpeg>]
+<../images/E7_delay_vs_rho.jpeg, id=275, 542.025pt x 361.35pt>
 File: ../images/E7_delay_vs_rho.jpeg Graphic file (type jpg)
 <use ../images/E7_delay_vs_rho.jpeg>
-Package pdftex.def Info: ../images/E7_delay_vs_rho.jpeg  used on input line 584.
+Package pdftex.def Info: ../images/E7_delay_vs_rho.jpeg  used on input line 654.
 (pdftex.def)             Requested size: 362.77264pt x 241.85512pt.
- [13 <../images/E7_delay_vs_rho.jpeg>] [14]
-<../images/E8_boxplot.jpeg, id=273, 602.25pt x 361.35pt>
+ [14] [15 <../images/E7_delay_vs_rho.jpeg>] [16]
+<../images/E8_boxplot.jpeg, id=300, 602.25pt x 361.35pt>
 File: ../images/E8_boxplot.jpeg Graphic file (type jpg)
 <use ../images/E8_boxplot.jpeg>
-Package pdftex.def Info: ../images/E8_boxplot.jpeg  used on input line 704.
+Package pdftex.def Info: ../images/E8_boxplot.jpeg  used on input line 788.
 (pdftex.def)             Requested size: 386.95897pt x 232.184pt.
- [15]
-Overfull \hbox (45.08601pt too wide) in paragraph at lines 731--738
- [][] 
- []
-
-[16 <../images/E8_boxplot.jpeg>] [17] (./report.aux)
+ [17 <../images/E8_boxplot.jpeg>] [18] [19] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -996,18 +992,18 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D6A97090496A739E399455050D816AD8;5440.
  ) 
 Here is how much of TeX's memory you used:
- 45468 strings out of 474222
- 1091269 string characters out of 5748733
+ 45499 strings out of 474222
+ 1092036 string characters out of 5748733
  1952975 words of memory out of 5000000
- 66989 multiletter control sequences out of 15000+600000
- 570828 words of font info for 85 fonts, out of 8000000 for 9000
+ 67017 multiletter control sequences out of 15000+600000
+ 571136 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  101i,19n,117p,846b,2218s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on report.pdf (18 pages, 1135759 bytes).
+Output written on report.pdf (20 pages, 1345031 bytes).
 PDF statistics:
- 380 PDF objects out of 1000 (max. 8388607)
- 289 compressed objects within 3 object streams
- 66 named destinations out of 1000 (max. 500000)
- 386 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 409 PDF objects out of 1000 (max. 8388607)
+ 312 compressed objects within 4 object streams
+ 69 named destinations out of 1000 (max. 500000)
+ 391 words of extra memory for PDF output out of 10000 (max. 10000000)
 

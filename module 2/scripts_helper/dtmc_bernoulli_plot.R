@@ -2,8 +2,8 @@ library(ggplot2)
 library(gridExtra)
 
 #Input parameters
-alpha=0.9
-beta=0.1
+alpha=0.1
+beta=0.9
 
 #2-DTMC transition matrix
 P=matrix(c(alpha,1-alpha,beta,1-beta),
