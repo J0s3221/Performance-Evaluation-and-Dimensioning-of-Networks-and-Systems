@@ -21,4 +21,7 @@
 \contentsline {subsubsection}{\numberline {5.1.1}(a) Average queuing delay}{17}{subsubsection.5.1.1}%
 \contentsline {subsubsection}{\numberline {5.1.2}(b) Variability of the estimates}{17}{subsubsection.5.1.2}%
 \contentsline {subsubsection}{\numberline {5.1.3}(c) Priority for mice}{18}{subsubsection.5.1.3}%
-\contentsline {section}{\numberline {6}Conclusion}{19}{section.6}%
+\contentsline {section}{\numberline {6}E. Server farms}{19}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Exercise 9: Random vs.\ JSQ task assignment}{19}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Exercise 10: Load balancing in NGINX}{20}{subsection.6.2}%
+\contentsline {section}{\numberline {7}Conclusion}{22}{section.7}%

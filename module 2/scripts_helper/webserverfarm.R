@@ -5,8 +5,8 @@ require(extraDistr)
 
 #input parameters
 numServers=2
-ArrivalRate=1.5
-ServiceRate<<-7.5
+ArrivalRate=1.9
+ServiceRate<<-1
 StoppingCondition=100000
 
 rescheduleDepartures = function(thisServer,numJobsBefore,numJobsAfter) {

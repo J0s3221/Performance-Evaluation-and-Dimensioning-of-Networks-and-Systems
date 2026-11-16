@@ -10,6 +10,7 @@
 \usepackage{listings}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[most]{tcolorbox}
+\usepackage{array} % Column alignment in tables
 \usepackage{float}
 
 
@@ -163,7 +164,7 @@
 % ======================================================================
 \section{Introduction}
 
-This report presents the solutions to the exercises of Laboratory~2 of the Performance Evaluation and Dimensioning of Networks and Systems (DDRS) course, whose aim is to study discrete-time Markov chains (DTMCs), continuous-time Markov chains (CTMCs), queuing systems, and their applications. The exercises are organized in the same blocks as the laboratory guide: discrete-time Markov chains (Section~\ref{sec:A}), DTMCs and CTMCs (Section~\ref{sec:B}), queuing systems (Section~\ref{sec:C}), and workloads (Section~\ref{sec:D}).
+This report presents the solutions to the exercises of Laboratory~2 of the Performance Evaluation and Dimensioning of Networks and Systems (DDRS) course, whose aim is to study discrete-time Markov chains (DTMCs), continuous-time Markov chains (CTMCs), queuing systems, and their applications. The exercises are organized in the same blocks as the laboratory guide: discrete-time Markov chains (Section~\ref{sec:A}), DTMCs and CTMCs (Section~\ref{sec:B}), queuing systems (Section~\ref{sec:C}), workloads (Section~\ref{sec:D}), and server farms (Section~\ref{sec:E}).
 
 Each exercise follows the objective--approach--results--conclusion structure used in the Laboratory~1 report. The analytical results are computed in R and compared with discrete-event simulation; following the work guidelines, simulation results are presented with 95\% confidence intervals.
 
@@ -853,6 +854,177 @@ $W_{q,m}=\lambda p_1 S_1^2/\big(2(1-\sigma_m)\big)\approx0.16$
 (0.15 for Bimodal~1), at the cost of a further delay for the elephants
 (theoretical value only; not simulated).
 
+\section{E. Server farms}\label{sec:E}
+
+\subsection{Exercise 9: Random vs.\ JSQ task assignment}
+
+\textbf{Objective:} Compare the random and Join-the-Shortest-Queue (JSQ) task
+assignment policies in a Web server farm with two servers, for several values of
+the system load $\rho$.
+
+\textbf{Simulator:} The script \texttt{webserverfarm.R} generates jobs with
+Poisson arrivals (rate $\lambda$) and exponentially distributed sizes. Each
+server is a \emph{processor-sharing} (PS) server, as is typical of Web servers:
+when $n$ jobs are present, each one receives a fraction $1/n$ of the server
+capacity. To implement this, every time a job arrives at or leaves a server,
+the function \texttt{rescheduleDepartures()} computes how much work each job
+of that server has done since the last event and recomputes its departure
+time with the new number of jobs. The random policy sends each job to a server
+chosen uniformly at random; JSQ sends it to the server with the fewest jobs,
+breaking ties at random. Each policy is simulated until $10^5$ jobs have
+completed, and the average delay in the system (waiting plus service) is
+computed. The script draws the job size, in service units, with rate
+\texttt{ServiceRate} and serves it at speed \texttt{ServiceRate}, so the mean
+service time is only $1/\mu$ when $\mu=1$; this is why the guide requires
+$\mu=1$.
+
+\textbf{Parameters:} $\mu=1$ (\texttt{ServiceRate}), $\lambda=2\rho\mu$
+(\texttt{ArrivalRate}) for $\rho=0.3$, 0.5, 0.7, 0.8, 0.9 and 0.95, and
+$10^5$ completed jobs per run (\texttt{StoppingCondition}). Our script
+\texttt{E9\_run.R} runs the course script unchanged, setting only these three
+input lines and the seed, with 10 independent runs (seeds 1 to 10) per value of
+$\rho$; 95\% Student-$t$ confidence intervals were computed from the 10 run
+averages.
+
+\textbf{Theory:} With random assignment, the Poisson arrival stream is split
+into two independent Poisson streams of rate $\lambda/2$, so each server is an
+M/M/1-PS queue. Its average delay is the same as that of an M/M/1 FIFO queue:
+\[
+T_{\mathrm{random}}=\frac{1}{\mu-\lambda/2}=\frac{1}{\mu(1-\rho)},
+\]
+which is the value computed by the script (\texttt{TrueAvgDelay}). JSQ makes
+the two servers dependent on each other and has no simple closed-form
+solution, so it is evaluated by simulation only.
+
+\begin{table}[H]
+    \centering
+    \caption{Average delay in system ($\mu=1$; simulation: mean of 10 runs $\pm$ 95\% CI half-width).}
+    \label{tab:wsf}
+    \begin{tabular}{c|cc|c|cc}
+        & \multicolumn{2}{c|}{Random} & JSQ & \multicolumn{2}{c}{JSQ vs.\ random} \\
+        $\rho$ & Theory & Simulation & Simulation & Difference & Reduction \\
+        \hline
+        0.30 & 1.429  & $1.428\pm0.006$  & $1.144\pm0.003$  & 0.28 & $20\%$ \\
+        0.50 & 2.000  & $2.000\pm0.014$  & $1.426\pm0.009$  & 0.57 & $29\%$ \\
+        0.70 & 3.333  & $3.332\pm0.049$  & $2.103\pm0.018$  & 1.23 & $37\%$ \\
+        0.80 & 5.000  & $4.999\pm0.112$  & $2.977\pm0.052$  & 2.02 & $40\%$ \\
+        0.90 & 10.000 & $9.95\pm0.38$    & $5.63\pm0.28$    & 4.32 & $43\%$ \\
+        0.95 & 20.000 & $19.28\pm1.07$   & $10.59\pm0.93$   & 8.69 & $45\%$ \\
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{../images/E9_delay_vs_rho.jpeg}
+    \caption{Average delay in system versus load: theory for the random policy (line) and simulation (points with 95\% confidence intervals).}
+    \label{fig:wsf}
+\end{figure}
+
+\textbf{Results:} The random policy agrees with the theory at all loads, with
+the theoretical value inside the confidence interval. JSQ is always better,
+and its advantage grows with the load: the average delay is 20\% lower than
+with random assignment at $\rho=0.3$, 40\% lower at $\rho=0.8$ and 45\% lower at
+$\rho=0.95$ (Table~\ref{tab:wsf} and Figure~\ref{fig:wsf}). In absolute terms,
+the difference grows from 0.28 to 8.7 mean service times.
+
+\textbf{Conclusion:} Random assignment ignores the state of the servers, so the
+two queues evolve independently: one server can accumulate several jobs while
+the other is idle, and part of the capacity of the farm is wasted. JSQ sends
+each job to the less loaded server, which keeps both servers busy whenever
+there are at least two jobs, and with processor sharing a new job also shares
+its server with fewer other jobs. The gain grows with the load because the cost
+of an imbalance grows with it. At low load, jobs rarely overlap, so it seldom
+matters which server is chosen. At high load, the servers are almost always
+busy, imbalances are frequent, and each one is expensive, since the delay grows
+sharply as $\rho\to1$. Using the state of the servers therefore matters most
+precisely when the system is busiest. JSQ only
+requires the dispatcher to know the number of jobs at each server, which is
+easy to track at a front-end load balancer (Exercise~10). The confidence
+intervals widen with the load (from 0.4\% to 6--9\% of the mean), as in the
+previous exercises; the random estimate at $\rho=0.95$ is 3.6\% below theory,
+but still inside its interval, which is consistent with each run starting
+from an empty system and taking a long time to reach steady state at such a
+high load.
+
+\subsection{Exercise 10: Load balancing in NGINX}
+
+\textbf{Objective:} Describe NGINX and its load-balancing algorithms, and
+identify which ones give the lowest average response delay, using the results
+of Exercise~9.
+
+\textbf{What is NGINX:} NGINX is open-source software, written in C by Igor
+Sysoev and first released in 2004, that works as a web server, reverse proxy,
+load balancer, mail proxy and HTTP cache~\cite{nginx-wiki}. It was designed
+to handle a very large number of concurrent connections (the ``C10K
+problem'') with low resource usage~\cite{f5-nginx}, which is why it is widely
+deployed in front of a pool of application servers, distributing the incoming
+requests among them. NGINX Plus is the commercial version, developed by F5,
+which adds features such as the Least Time method.
+
+\textbf{Load-balancing algorithms:} The methods available in NGINX are listed in
+Table~\ref{tab:nginx}~\cite{nginx-lb,nginx-admin}. All of them support server
+weights, so that more powerful servers receive a larger share of the requests.
+
+\begin{table}[H]
+    \centering \small
+    \caption{Load-balancing methods of NGINX (directive in the \texttt{upstream} block).}
+    \label{tab:nginx}
+    \begin{tabular}{>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}p{6.4cm}>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{3.2cm}}
+        \hline
+        Method & How the server is chosen & Uses server state? & Server-farm equivalent \\
+        \hline
+        Round Robin (default) & Servers are used in turn, in a fixed order.
+          & No & Round-robin assignment \\
+        Least Connections (\texttt{least\_conn}) & Server with the fewest active connections.
+          & Yes (connections) & JSQ \\
+        Least Time (\texttt{least\_time}, NGINX Plus) & Combines the number of active connections with the
+          average response time (to the first byte or to the full response).
+          & Yes (connections and delay) & JSQ weighted by server speed \\
+        Hash (\texttt{hash}) & A key chosen by the administrator (e.g.\ the URI) is hashed to a server; optionally
+          consistent hashing, so that few keys move when servers are added or removed.
+          & No & Static assignment \\
+        IP Hash (\texttt{ip\_hash}) & Hash of the client IP address, so a client always reaches the same server.
+          & No & Static assignment \\
+        Random (\texttt{random}) & Server chosen at random.
+          & No & Random \\
+        Random with Two Choices (\texttt{random two}) & Two servers chosen at random; the request goes to the one with fewer
+          connections (or less time in NGINX Plus).
+          & Yes (2 servers) & Power of two choices \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Which methods perform better:} The methods fall into two groups.
+\emph{Static} methods (Round Robin, Random, Hash and IP Hash) ignore the current
+state of the servers. They can only balance the number of requests sent to each
+server, not the amount of work, so a server that receives a few long requests
+keeps receiving new ones while another may be idle. Hash and IP Hash exist to
+keep a client or object on the same server (session persistence and caching),
+not for performance, and they can be unbalanced if a few keys are very popular.
+Round Robin is better than Random, since each server receives a more regular
+stream of requests, but it is still blind to the request sizes.
+
+\emph{Dynamic} methods (Least Connections, Least Time and Random with Two
+Choices) use the number of active connections, which in a web server that
+shares its capacity among the requests in progress is the number of jobs at a
+processor-sharing server. Least Connections is therefore the JSQ policy of
+Exercise~9, which reduced the average delay of the random policy by 20\% to
+45\%, more at high load (Table~\ref{tab:wsf}). Least
+Time goes one step further, since response times also capture servers that are
+slower or temporarily degraded, which the number of connections does not.
+
+For a single load balancer, the methods with the lowest average response delay
+are therefore Least Time and Least Connections, followed by Random with Two
+Choices, Round Robin, and finally Random and the hash methods. Random with Two
+Choices is less effective than Least Connections when one balancer sees all the
+requests (with only two servers they coincide), but NGINX recommends it when
+several independent load balancers share the same servers~\cite{nginx-p2c}. In
+that case, each balancer has only a partial and slightly outdated view of the
+server state, and if all of them send their requests to the same ``least
+loaded'' server, that server is overloaded (herd behavior). Picking the best
+of two random servers avoids this, while still keeping most of the benefit of
+using state information~\cite{nginx-p2c}.
+
 \section{Conclusion}
 
 The exercises of this laboratory show how Markov models and queuing theory can predict the performance of networks and systems, and how discrete-event simulation can confirm those predictions. In all cases where an exact model exists, the simulation estimates agree with the theory to within a few percent, and in most cases the theoretical value lies inside the confidence interval.
@@ -860,5 +1032,15 @@ The exercises of this laboratory show how Markov models and queuing theory can p
 Discrete-time Markov chains extend independent Bernoulli models by capturing temporal dependence, and their transition probabilities can be estimated directly from an observed trace. Applied to slotted ALOHA, a DTMC model shows that throughput is limited by collisions and collapses when the offered load is too high, which is why carrier-sensing protocols are preferred whenever propagation delay is small. The limiting probabilities of DTMCs and CTMCs can be obtained equivalently from the balance equations, from matrix powers, and by simulation, and the two views of a CTMC lead to the same process.
 
 The queuing exercises show that steady-state performance measures only exist for $\rho<1$; for $\rho\ge1$, the measured delay simply grows with the length of the run. For a stable queue, delay depends not only on the load and the mean service time, but also on the variability of the service time: fixed packet sizes halve the M/M/1 queuing delay, while highly variable (mice--elephant) workloads increase it by more than an order of magnitude and make simulation estimates much less precise. Scheduling can redistribute this delay: strict priorities protect a high-priority flow without reducing the average delay, while giving priority to short jobs reduces the average delay by about 30\%.
+
+Finally, in a server farm, how jobs are assigned to servers matters as much as the capacity of the servers. Assigning jobs at random wastes capacity, because one server can be overloaded while another is idle. Using the state of the servers, as Join the Shortest Queue does, reduced the average delay by up to 45\%, with the largest gains at the highest loads. This is the principle behind the Least Connections and Least Time methods of load balancers such as NGINX.
+
+\begin{thebibliography}{9}
+    \bibitem{nginx-wiki} ``Nginx'', Wikipedia. \url{https://en.wikipedia.org/wiki/Nginx}
+    \bibitem{f5-nginx} F5, ``What is NGINX?''. \url{https://www.f5.com/glossary/nginx}
+    \bibitem{nginx-lb} NGINX, ``What is load balancing?''. \url{https://www.nginx.com/resources/glossary/load-balancing/}
+    \bibitem{nginx-admin} NGINX documentation, ``HTTP Load Balancing''. \url{https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/}
+    \bibitem{nginx-p2c} NGINX, ``NGINX and the `Power of Two Choices' Load-Balancing Algorithm'', November 2018. \url{https://www.f5.com/company/blog/nginx/nginx-power-of-two-choices-load-balancing-algorithm}
+\end{thebibliography}
 
 \end{document}
