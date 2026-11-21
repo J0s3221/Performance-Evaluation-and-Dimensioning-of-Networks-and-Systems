@@ -1,22 +1,11 @@
-# Exercise 11 - Kleinrock approximation, using the course simulator pnet.R.
-#
-# The network (topology and flows) is defined ONLY in the course file
-# scripts_helper/pnet/parameters.R, which is used without changes by both:
-#   - the Kleinrock approximation (theory), computed by kleinrock() below;
-#   - the pnet.R simulator, run nRuns times with different seeds.
-# The results of the two are then compared.
-#
-# To study another network, edit LinkCapacities and Flows in parameters.R.
-#
-# Usage: Rscript E11_Kleinrock.R        (from any folder)
-
-nRuns <- 10 # Number of independent simulation runs
+if (!exists("nRuns")) nRuns <- 10 # Number of independent simulation runs
 
 # ---- Go to the folder of the course simulator --------------------------------
 file_arg    <- grep("^--file=", commandArgs(FALSE), value = TRUE)
 script_path <- gsub("~+~", " ", sub("^--file=", "", file_arg), fixed = TRUE)
 script_dir  <- if (length(file_arg)) dirname(normalizePath(script_path)) else getwd()
-setwd(file.path(script_dir, "../scripts_helper/pnet"))
+if (!exists("pnet_dir")) pnet_dir <- file.path(script_dir, "../scripts_helper/pnet")
+setwd(pnet_dir)
 
 # ---- Kleinrock approximation (same data structures as pnet.R) ---------------
 # Every link is modelled as an independent M/M/1 queue.
@@ -90,5 +79,8 @@ res <- data.frame(quantity = names,
 cat(sprintf("pnet.R simulation: %d runs, endTime = %g s each\n", nRuns, endTime))
 print(res, row.names = FALSE, digits = 4)
 
-write.csv(res, file.path(script_dir, "../data_results/E11_results.csv"), row.names = FALSE)
-cat("\nResults saved to data_results/E11_results.csv\n")
+if (!exists("out_csv")) out_csv <- file.path(script_dir, "../data_results/E11_results.csv")
+if (!is.null(out_csv)) {
+  write.csv(res, out_csv, row.names = FALSE)
+  cat("\nResults saved to", out_csv, "\n")
+}
