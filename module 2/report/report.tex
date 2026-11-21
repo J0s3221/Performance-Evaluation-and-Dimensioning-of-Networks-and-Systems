@@ -948,82 +948,54 @@ high load.
 
 \subsection{Exercise 10: Load balancing in NGINX}
 
-\textbf{Objective:} Describe NGINX and its load-balancing algorithms, and
-identify which ones give the lowest average response delay, using the results
-of Exercise~9.
+\textbf{Objective:} Describe what NGINX is and identify which of its
+load-balancing algorithms give the lowest average response delay.
 
-\textbf{What is NGINX:} NGINX is open-source software, written in C by Igor
-Sysoev and first released in 2004, that works as a web server, reverse proxy,
-load balancer, mail proxy and HTTP cache~\cite{nginx-wiki}. It was designed
-to handle a very large number of concurrent connections (the ``C10K
-problem'') with low resource usage~\cite{f5-nginx}, which is why it is widely
-deployed in front of a pool of application servers, distributing the incoming
-requests among them. NGINX Plus is the commercial version, developed by F5,
-which adds features such as the Least Time method.
+\textbf{What is NGINX:} NGINX is a software-based load balancer and
+application delivery controller, available as NGINX Open Source and as the
+commercial NGINX Plus, and used by more than 350 million websites~\cite{f5-lb}.
+A load balancer acts as a proxy between the users and a group of servers and
+distributes the incoming requests among them, so that the servers are used
+evenly, which improves the reliability, availability and performance of the
+application~\cite{f5-lb}.
 
-\textbf{Load-balancing algorithms:} The methods available in NGINX are listed in
-Table~\ref{tab:nginx}~\cite{nginx-lb,nginx-admin}. All of them support server
-weights, so that more powerful servers receive a larger share of the requests.
+\textbf{Load-balancing algorithms:} Load balancing can be \emph{static}, based
+on fixed information about the servers and suited to predictable traffic, or
+\emph{dynamic}, deciding at runtime where to send each request and suited to
+traffic with high fluctuations~\cite{f5-lb}. The algorithms described in the
+reference are summarized in Table~\ref{tab:nginx}.
 
 \begin{table}[H]
     \centering \small
-    \caption{Load-balancing methods of NGINX (directive in the \texttt{upstream} block).}
+    \caption{Load-balancing algorithms~\cite{f5-lb}.}
     \label{tab:nginx}
-    \begin{tabular}{>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}p{6.4cm}>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{3.2cm}}
+    \begin{tabular}{>{\raggedright\arraybackslash}p{3.6cm}>{\raggedright\arraybackslash}p{11.4cm}}
         \hline
-        Method & How the server is chosen & Uses server state? & Server-farm equivalent \\
+        Algorithm & How the server is chosen \\
         \hline
-        Round Robin (default) & Servers are used in turn, in a fixed order.
-          & No & Round-robin assignment \\
-        Least Connections (\texttt{least\_conn}) & Server with the fewest active connections.
-          & Yes (connections) & JSQ \\
-        Least Time (\texttt{least\_time}, NGINX Plus) & Combines the number of active connections with the
-          average response time (to the first byte or to the full response).
-          & Yes (connections and delay) & JSQ weighted by server speed \\
-        Hash (\texttt{hash}) & A key chosen by the administrator (e.g.\ the URI) is hashed to a server; optionally
-          consistent hashing, so that few keys move when servers are added or removed.
-          & No & Static assignment \\
-        IP Hash (\texttt{ip\_hash}) & Hash of the client IP address, so a client always reaches the same server.
-          & No & Static assignment \\
-        Random (\texttt{random}) & Server chosen at random.
-          & No & Random \\
-        Random with Two Choices (\texttt{random two}) & Two servers chosen at random; the request goes to the one with fewer
-          connections (or less time in NGINX Plus).
-          & Yes (2 servers) & Power of two choices \\
+        Round Robin & Servers are used in turn, in a fixed rotation. \\
+        Threshold & Requests are distributed according to a threshold set by the administrator. \\
+        Least Connections & Server with the fewest active connections, taking its relative capacity into account. \\
+        Least Time & Combination of the fastest response time and the fewest active connections. \\
+        Random with Two Choices & Two servers are picked at random, and Least Connections or Least Time chooses between them. \\
+        URL Hash / Source IP Hash & A hash of the requested URL, or of the client's IP address, always maps the same request or client to the same server. \\
+        Consistent Hashing & Clients and servers are placed on a ring, and each request goes to the next server on the ring. \\
         \hline
     \end{tabular}
 \end{table}
 
-\textbf{Which methods perform better:} The methods fall into two groups.
-\emph{Static} methods (Round Robin, Random, Hash and IP Hash) ignore the current
-state of the servers. They can only balance the number of requests sent to each
-server, not the amount of work, so a server that receives a few long requests
-keeps receiving new ones while another may be idle. Hash and IP Hash exist to
-keep a client or object on the same server (session persistence and caching),
-not for performance, and they can be unbalanced if a few keys are very popular.
-Round Robin is better than Random, since each server receives a more regular
-stream of requests, but it is still blind to the request sizes.
-
-\emph{Dynamic} methods (Least Connections, Least Time and Random with Two
-Choices) use the number of active connections, which in a web server that
-shares its capacity among the requests in progress is the number of jobs at a
-processor-sharing server. Least Connections is therefore the JSQ policy of
-Exercise~9, which reduced the average delay of the random policy by 20\% to
-45\%, more at high load (Table~\ref{tab:wsf}). Least
-Time goes one step further, since response times also capture servers that are
-slower or temporarily degraded, which the number of connections does not.
-
-For a single load balancer, the methods with the lowest average response delay
-are therefore Least Time and Least Connections, followed by Random with Two
-Choices, Round Robin, and finally Random and the hash methods. Random with Two
-Choices is less effective than Least Connections when one balancer sees all the
-requests (with only two servers they coincide), but NGINX recommends it when
-several independent load balancers share the same servers~\cite{nginx-p2c}. In
-that case, each balancer has only a partial and slightly outdated view of the
-server state, and if all of them send their requests to the same ``least
-loaded'' server, that server is overloaded (herd behavior). Picking the best
-of two random servers avoids this, while still keeping most of the benefit of
-using state information~\cite{nginx-p2c}.
+\textbf{Which algorithms perform better:} The algorithms that use the current
+state of the servers give the lowest average response delay. Least Time is the
+best, since it is the only one that directly uses the response time of the
+servers, followed by Least Connections and Random with Two Choices, which use
+the number of active connections. Least Connections is the JSQ policy of
+Exercise~9: in a web server, the number of active connections is the number of
+requests sharing the server, and JSQ reduced the average delay of random
+assignment by 20 to 45\%, with the largest gains at high load
+(Table~\ref{tab:wsf}). Static algorithms, such as Round Robin and the hash
+methods, ignore how busy each server is, so a server can keep receiving
+requests while another one is idle. The hash methods are mainly used to keep a
+client on the same server (session persistence), not to reduce the delay.
 
 \section{F. Packet switched networks}\label{sec:F}
 
@@ -1375,11 +1347,7 @@ Finally, in a server farm, how jobs are assigned to servers matters as much as t
 In packet switched networks, the Kleinrock approximation gives the delay of any network from simple M/M/1 formulas, but it ignores that a packet keeps its length from link to link. It is accurate at low and medium load and when many flows share the links, but it can overestimate the delay by more than 50\% for a single flow over tandem links at high load. Even so, it is a good basis for routing decisions: balancing the load by bifurcating the flows over several routes reduced the average network delay by about 19\%, and both the hand optimization and the gradient projection algorithm were confirmed by simulation.
 
 \begin{thebibliography}{9}
-    \bibitem{nginx-wiki} ``Nginx'', Wikipedia. \url{https://en.wikipedia.org/wiki/Nginx}
-    \bibitem{f5-nginx} F5, ``What is NGINX?''. \url{https://www.f5.com/glossary/nginx}
-    \bibitem{nginx-lb} NGINX, ``What is load balancing?''. \url{https://www.nginx.com/resources/glossary/load-balancing/}
-    \bibitem{nginx-admin} NGINX documentation, ``HTTP Load Balancing''. \url{https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/}
-    \bibitem{nginx-p2c} NGINX, ``NGINX and the `Power of Two Choices' Load-Balancing Algorithm'', November 2018. \url{https://www.f5.com/company/blog/nginx/nginx-power-of-two-choices-load-balancing-algorithm}
+    \bibitem{f5-lb} F5, ``What is a load balancer?''. \url{https://www.f5.com/glossary/load-balancer}
 \end{thebibliography}
 
 \end{document}
