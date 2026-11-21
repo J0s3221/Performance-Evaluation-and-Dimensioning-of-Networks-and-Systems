@@ -24,4 +24,8 @@
 \contentsline {section}{\numberline {6}E. Server farms}{19}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Exercise 9: Random vs.\ JSQ task assignment}{19}{subsection.6.1}%
 \contentsline {subsection}{\numberline {6.2}Exercise 10: Load balancing in NGINX}{20}{subsection.6.2}%
-\contentsline {section}{\numberline {7}Conclusion}{22}{section.7}%
+\contentsline {section}{\numberline {7}F. Packet switched networks}{22}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Exercise 11: Kleinrock approximation}{22}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Exercise 12: Accuracy of the Kleinrock approximation}{23}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Exercise 13: Routing in a packet switched network}{25}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Conclusion}{28}{section.8}%

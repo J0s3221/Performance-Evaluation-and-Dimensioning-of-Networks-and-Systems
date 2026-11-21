@@ -1025,6 +1025,343 @@ loaded'' server, that server is overloaded (herd behavior). Picking the best
 of two random servers avoids this, while still keeping most of the benefit of
 using state information~\cite{nginx-p2c}.
 
+\section{F. Packet switched networks}\label{sec:F}
+
+\subsection{Exercise 11: Kleinrock approximation}
+
+\textbf{Objective:} Develop a script that, for any network topology and any
+set of flows with fixed routing, calculates with the Kleinrock approximation
+(i) the average packet delay of each flow, (ii) the average number of packets
+in the network, and (iii) the average packet delay in the network, using the
+same data structures as the \texttt{pnet.R} simulator.
+
+\textbf{Theory:} In a packet switched network, a packet waits in a queue and
+is then transmitted on every link of its route, so its delay is the sum of the
+delays on those links. With Poisson arrivals and exponentially distributed
+packet sizes, the first link of a flow is an M/M/1 queue, but the following
+links are not: a packet keeps its length from link to link, so the arrivals at
+a downstream link are correlated with its service times. The Kleinrock
+approximation ignores this correlation and models every link $k$ as an
+independent M/M/1 queue, with arrival rate $\lambda_k$ (the sum of the rates
+of the flows that cross the link) and service rate $\mu_k=C_k/\bar{L}$, where
+$C_k$ is the link capacity and $\bar{L}$ the mean packet size. It requires
+$\rho_k=\lambda_k/\mu_k<1$ on every link. With $L$ the average number of
+packets and $W$ the average delay:
+\begin{align*}
+    L_k &= \frac{\lambda_k}{\mu_k-\lambda_k}, &
+    W_k &= \frac{1}{\mu_k-\lambda_k}, \\
+    \text{(i)}\;\; W_f &= \sum_{k\,\in\,\text{route}(f)} W_k, &
+    \text{(ii)}\;\; L &= \sum_k L_k, \qquad
+    \text{(iii)}\;\; W = \frac{L}{\gamma},\;\; \gamma=\sum_f \lambda_f ,
+\end{align*}
+where (iii) is Little's law applied to the whole network. Note that $\gamma$
+is the total rate offered to the network, not $\sum_k\lambda_k$, which counts
+a packet once per link it crosses.
+
+\textbf{Implementation:} The script \texttt{E11\_Kleinrock.R} is connected to
+the course simulator. The network is defined only in the course file \texttt{parameters.R} of
+\texttt{scripts\_helper/pnet} (the \texttt{LinkCapacities} vector and the
+\texttt{Flows} list, with links numbered from 1), so studying another network
+only requires editing that file. The script:
+\begin{enumerate}
+    \item reads \texttt{parameters.R}, as \texttt{pnet.R} does;
+    \item computes the Kleinrock approximation in the function
+    \texttt{kleinrock()}: it adds the rate of each flow to every link of its
+    route (the same idea as \texttt{loadlinks()} in \texttt{bg.R}), stops if any
+    link has $\rho_k\ge1$, and computes $L_k$ (with the same expression used in
+    \texttt{bg.R}), $W_k$, and (i), (ii) and (iii);
+    \item runs \texttt{pnet.R}, unchanged, 10 times with different seeds, and
+    takes the average delay of each flow from its \texttt{FlowStats} variable;
+    \item compares the two, with 95\% Student-$t$ confidence intervals for the
+    simulation; the simulated $L$ is obtained with Little's law, $L=\gamma W$.
+\end{enumerate}
+The script can also be run by other scripts on a different copy of the
+simulator folder, which is how it is reused in Exercises~12 and~13.
+
+\textbf{Test:} The script was tested with the example of the lectures (pktnet
+slides 14--15), which is also the default network of \texttt{pnet.R}: links
+$\ell_1$ ($1\!\to\!3$) and $\ell_2$ ($2\!\to\!3$) with 100~Mb/s, link $\ell_3$
+($3\!\to\!4$) with 200~Mb/s, $\bar{L}=1000$~bytes, and three flows: 7.5~kpkt/s
+on $\ell_1,\ell_3$, 10~kpkt/s on $\ell_2,\ell_3$ and 5~kpkt/s on $\ell_3$.
+By hand, $\mu_1=\mu_2=10^8/8000=12\,500$~pkt/s and $\mu_3=25\,000$~pkt/s;
+$\lambda_1=7500$, $\lambda_2=10\,000$ and $\lambda_3=22\,500$~pkt/s; so
+$W_1=0.2$~ms, $W_2=W_3=0.4$~ms, the flow delays are 0.6, 0.8 and 0.4~ms,
+$L=1.5+4+9=14.5$ packets and $W=14.5/22\,500=0.644$~ms. The script gives
+exactly these values (Table~\ref{tab:kleinrock-example}).
+
+\begin{table}[H]
+    \centering
+    \caption{Lecture example: Kleinrock approximation (script, equal to the hand calculation) and \texttt{pnet.R} simulation (10 runs of 2~s, mean $\pm$ 95\% CI half-width).}
+    \label{tab:kleinrock-example}
+    \begin{tabular}{l|c|c|c}
+        Quantity & Kleinrock & Simulation & Kleinrock error \\
+        \hline
+        $W_1$, flow 1 ($\ell_1,\ell_3$) & 0.600~ms & $0.550\pm0.019$~ms & $+9.0\%$ \\
+        $W_2$, flow 2 ($\ell_2,\ell_3$) & 0.800~ms & $0.751\pm0.031$~ms & $+6.5\%$ \\
+        $W_3$, flow 3 ($\ell_3$)        & 0.400~ms & $0.334\pm0.017$~ms & $+19.6\%$ \\
+        $W$, network                    & 0.644~ms & $0.591\pm0.024$~ms & $+9.0\%$ \\
+        $L$, network                    & 14.5     & $13.31\pm0.54$     & $+9.0\%$ \\
+    \end{tabular}
+\end{table}
+
+\textbf{Conclusion:} The script reproduces the hand calculations of the
+lecture example, and because it uses the input structures of \texttt{pnet.R},
+any network can be solved with the Kleinrock approximation and simulated from
+the same parameters file. In this example the approximation overestimates the
+delays by about 9\%, with the theoretical values outside the confidence
+intervals, so the difference is not due to simulation noise. It is largest for
+flow 3, which only uses $\ell_3$, the most loaded link ($\rho_3=0.9$), crossed by
+all three flows. The approximation is evaluated in detail in Exercise~12.
+
+\subsection{Exercise 12: Accuracy of the Kleinrock approximation}
+
+\textbf{Objective:} For a network of two tandem links of 64~kb/s, with a single
+flow from the first to the last node (Poisson arrivals, exponential packet
+sizes with mean 1000~bits), compare the average packet delay obtained with the
+Kleinrock approximation and with the \texttt{pnet.R} simulator, for
+$\rho=\lambda/\mu=0.05$, 0.5, 0.95 and 0.975.
+
+\textbf{Theory:} Each link has $\mu=64\,000/1000=64$~packets/s and
+$\lambda=\rho\mu$. With the Kleinrock approximation both links are independent
+M/M/1 queues, so
+\[
+W=\frac{1}{\mu-\lambda}+\frac{1}{\mu-\lambda}=\frac{2}{\mu(1-\rho)} .
+\]
+
+\textbf{Parameters:} The script \texttt{E12\_KleinrockTandem.R} reuses
+\texttt{E11\_Kleinrock.R}. For each $\rho$ it only writes the
+\texttt{parameters.R} of the network, in a temporary copy of the simulator
+folder (the course files are not modified), and runs
+\texttt{E11\_Kleinrock.R} on it, which computes the approximation and runs
+\texttt{pnet.R} 10 times. The \texttt{parameters.R} for $\rho=0.975$ is:
+\begin{configbox}
+parameters <- function() {
+  LinkCapacities<<-c(64e3,64e3) #In bits/sec
+  Flows<<-list(list(rate=62.4,packetsize=1000,route=c(1,2))) #lambda = rho*mu
+  endTime<<-1e+06*(1/62.4) #About 1e+06 packets
+}
+\end{configbox}
+The other values of $\rho$ only change \texttt{rate} and \texttt{endTime}. The
+simulation time was chosen to give about $10^5$ packets per run for
+$\rho=0.05$ and 0.5 ($\texttt{endTime}=31\,250$ and 3125~s), $5\times10^5$ for
+$\rho=0.95$ (8224~s) and $10^6$ for $\rho=0.975$ (16\,026~s), because the
+variance of the delay grows quickly as $\rho\to1$.
+
+\begin{table}[H]
+    \centering
+    \caption{Average packet delay in two tandem links of 64~kb/s (simulation: mean of 10 runs $\pm$ 95\% CI half-width).}
+    \label{tab:tandem}
+    \begin{tabular}{c|c|c|c|c}
+        $\rho$ & $\lambda$ (pkt/s) & Kleinrock & Simulation & Kleinrock error \\
+        \hline
+        0.05  & 3.2  & 32.89~ms  & $33.47\pm0.06$~ms & $-1.7\%$ \\
+        0.5   & 32   & 62.50~ms  & $64.77\pm0.36$~ms & $-3.5\%$ \\
+        0.95  & 60.8 & 625.0~ms  & $397.8\pm9.2$~ms  & $+57\%$ \\
+        0.975 & 62.4 & 1250~ms   & $745.9\pm42.9$~ms & $+68\%$ \\
+    \end{tabular}
+\end{table}
+
+\textbf{Results:} At low and medium load ($\rho\le0.5$) the approximation is
+close to the simulation, with errors of a few percent, although the theoretical
+value is still outside the confidence interval and slightly below it. At high
+load the approximation fails: it overestimates the delay by 57\% at
+$\rho=0.95$ and by 68\% at $\rho=0.975$ (Table~\ref{tab:tandem}).
+
+\textbf{Conclusion:} The error comes from the independence assumption. In
+\texttt{pnet.R}, as in a real network, a packet keeps its length on both links,
+so its transmission time is the same on the two links, and the arrivals at the
+second link are correlated with its service times: two consecutive packets
+arrive at the second link separated by at least the transmission time of the
+second one. At high load, almost all the queueing happens at the first link,
+which delivers the packets to the second link already spaced at the rate the
+second link can serve them, so the second link has almost no queue. The real
+delay is close to that of one M/M/1 queue plus one transmission time (for
+$\rho=0.95$, $1/(64\times0.05)+1/64=328$~ms, plus some extra waiting), while
+the approximation counts two full M/M/1 queues (625~ms). At low load the effect
+is small and in the opposite direction: packets that queued together at the
+first link leave it back to back, and when a long packet precedes a short one,
+the short one waits again at the second link. The Kleinrock approximation is
+therefore accurate at low and medium load, and in general when many flows are
+merged and split along the routes, which dilutes the correlation. A single
+flow over links of equal capacity at high load, as here, is its worst case.
+
+\subsection{Exercise 13: Routing in a packet switched network}
+
+\textbf{Objective:} For the network of Figure~\ref{fig:pnet13}, with all links
+of 256~kb/s and four flows with fixed routing, (a) calculate the average
+network packet delay with the Kleinrock approximation, (b) confirm it by
+simulation, (c) find the optimal bifurcation of flow 1 by hand, and (d) check
+with the gradient projection algorithm (\texttt{bg.R}) whether bifurcating all
+flows improves the delay further.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{../images/E13_network.png}
+    \caption{Network of Exercise 13, with the link numbering used in \texttt{pnet.R}.}
+    \label{fig:pnet13}
+\end{figure}
+
+\textbf{Setup:} With $\bar{L}=1000$~bits, every link has $\mu=256$~packets/s.
+The links are numbered as in Figure~\ref{fig:pnet13}, and the flows are:
+flow 1, route 1-2-4-6 ($\ell_1,\ell_3,\ell_6$), 215~pkt/s; flow 2, route 1-3-5
+($\ell_2,\ell_5$), 64~pkt/s; flow 3, route 1-3-5-6 ($\ell_2,\ell_5,\ell_7$),
+128~pkt/s; and flow 4, route 2-5 ($\ell_4$), 128~pkt/s. The total offered rate
+is $\gamma=535$~pkt/s. The script \texttt{E13\_PacketNetwork.R} solves all the
+questions: it reuses \texttt{E11\_Kleinrock.R} for the Kleinrock approximation
+and the \texttt{pnet.R} simulations, and runs \texttt{bg.R} unchanged.
+
+\textbf{a) Kleinrock approximation:} The link loads are
+$\lambda_1=\lambda_3=\lambda_6=215$, $\lambda_2=\lambda_5=64+128=192$ and
+$\lambda_4=\lambda_7=128$~pkt/s. Then $L_k=215/41=5.244$ on $\ell_1,\ell_3,\ell_6$,
+$192/64=3$ on $\ell_2,\ell_5$ and $128/128=1$ on $\ell_4,\ell_7$, so
+\[
+L=3\times5.244+2\times3+2\times1=23.73~\text{packets}, \qquad
+W=\frac{L}{\gamma}=\frac{23.73}{535}=44.36~\text{ms}.
+\]
+The flow delays are $W_1=3/41=73.2$~ms, $W_2=2/64=31.3$~ms,
+$W_3=2/64+1/128=39.1$~ms and $W_4=1/128=7.8$~ms.
+
+\textbf{b) Simulation:} \texttt{pnet.R} was run 10 times with the following
+\texttt{parameters.R} (about 53\,500 packets per run):
+\begin{configbox}
+parameters <- function() {
+  #Links: 1:1->2 2:1->3 3:2->4 4:2->5 5:3->5 6:4->6 7:5->6
+  LinkCapacities<<-rep(256e3,7) #In bits/sec
+  Flows<<-list(list(rate=215,packetsize=1000,route=c(1,3,6)),
+               list(rate=64,packetsize=1000,route=c(2,5)),
+               list(rate=128,packetsize=1000,route=c(2,5,7)),
+               list(rate=128,packetsize=1000,route=c(4)))
+  endTime<<-100 #In seconds
+}
+\end{configbox}
+
+\begin{table}[H]
+    \centering
+    \caption{Exercise 13 a)--b): Kleinrock approximation vs.\ \texttt{pnet.R} simulation (10 runs of 100~s, mean $\pm$ 95\% CI half-width).}
+    \label{tab:pnet13ab}
+    \begin{tabular}{l|c|c|c}
+        Quantity & Kleinrock & Simulation & Kleinrock error \\
+        \hline
+        $W_1$, flow 1 (1-2-4-6) & 73.17~ms & $57.08\pm2.15$~ms & $+28.2\%$ \\
+        $W_2$, flow 2 (1-3-5)   & 31.25~ms & $27.51\pm0.70$~ms & $+13.6\%$ \\
+        $W_3$, flow 3 (1-3-5-6) & 39.06~ms & $35.40\pm0.64$~ms & $+10.3\%$ \\
+        $W_4$, flow 4 (2-5)     & 7.81~ms  & $7.94\pm0.12$~ms  & $-1.6\%$ \\
+        $W$, network            & 44.36~ms & $36.62\pm0.83$~ms & $+21.1\%$ \\
+        $L$, network            & 23.73    & $19.59\pm0.45$    & $+21.1\%$ \\
+    \end{tabular}
+\end{table}
+
+The simulation confirms the order of magnitude of the delay, but the
+approximation overestimates the network delay by 21\%
+(Table~\ref{tab:pnet13ab}). As in Exercise~12, the error is mostly in flow 1,
+which is the only flow on links $\ell_3$ and $\ell_6$ at a high load
+($\rho=0.84$): there, flow 1 behaves like the single flow over tandem links of
+Exercise~12. Flow 4, which crosses a single link, agrees with the theory, as
+expected for an M/M/1 queue.
+
+\textbf{c) Optimal bifurcation of flow 1:} Let $x$ be the rate of flow 1 on
+route 1-2-4-6 and $215-x$ its rate on 1-2-5-6. Links $\ell_3$ and $\ell_6$ carry
+$x$; links $\ell_4$ and $\ell_7$ carry $128+(215-x)=343-x$ (flow 4 is on $\ell_4$
+and flow 3 on $\ell_7$); $\ell_1$ carries 215 in both cases, and the other links
+are not affected. The optimal bifurcation minimizes $L$, and is obtained when
+both routes have the same first derivative length, $\sum_k \partial L_k/\partial
+\lambda_k$ with $\partial L_k/\partial\lambda_k=\mu/(\mu-\lambda_k)^2$ (link
+$\ell_1$ is common to both routes and cancels out):
+\[
+\frac{2\mu}{(\mu-x)^2}=\frac{2\mu}{\big(\mu-(343-x)\big)^2}
+\;\Rightarrow\; x=343-x \;\Rightarrow\; x=171.5~\text{pkt/s},
+\]
+so 171.5~pkt/s use 1-2-4-6 and 43.5~pkt/s use 1-2-5-6. The four links
+$\ell_3,\ell_4,\ell_6,\ell_7$ then carry 171.5~pkt/s each, with
+$L_k=171.5/84.5=2.030$, so
+\[
+L=5.244+2\times3+4\times2.030=19.36~\text{packets}, \qquad
+W=\frac{19.36}{535}=36.19~\text{ms},
+\]
+18\% lower than the 44.36~ms of question a). The script checks this result by
+minimizing $W(x)$ numerically with the \texttt{kleinrock()} function of
+Exercise~11, which also gives $x=171.5$~pkt/s (Figure~\ref{fig:bifurcation}),
+and by simulating the bifurcated network (flow 1 split into two flows of 171.5
+and 43.5~pkt/s), which gives $W=33.88\pm0.82$~ms.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../images/E13_bifurcation.png}
+    \caption{Average network packet delay (Kleinrock approximation) as a function of the rate of flow 1 on route 1-2-4-6.}
+    \label{fig:bifurcation}
+\end{figure}
+
+\textbf{d) All flows bifurcated:} \texttt{bg.R} implements the gradient
+projection algorithm, which moves traffic of each origin-destination pair to
+its path with the minimum first derivative length until all used paths have
+the same length. It works with origin-destination pairs and rates in bits/s,
+so flows 1 and 3, both from node 1 to node 6, form a single pair with
+$(215+128)\times1000=343$~kb/s. Its \texttt{parameters.R}, used without
+changes since it already describes this network, is:
+\begin{configbox}
+parameters = function() {
+LinkCapacities<<-matrix(c(0,  256e3, 256e3,   0,   0,   0,
+                          0,    0,   0, 256e3, 256e3,   0,
+                          0,    0,   0,   0,   256e3,   0,
+                          0,    0,   0,   0,   0,   256e3,
+                          0,    0,   0,   0,   0,   256e3,
+                          0,    0,   0,   0,   0,       0),
+                        nrow=6, ncol=6, byrow=TRUE)
+Flows<<-matrix(c(1, 6, 343e3,
+                 1, 5,  64e3,
+                 2, 5, 128e3),
+               nrow=3, ncol=3, byrow=TRUE)
+}
+\end{configbox}
+The algorithm converged in 10 iterations of phase I and 77 of phase II, with
+the routes of Table~\ref{tab:bg}, giving $L=19.19$ packets and
+$W=19.19/535=35.87$~ms (simulation of this routing: $32.96\pm0.77$~ms).
+
+\begin{table}[H]
+    \centering
+    \caption{Optimal bifurcation of all flows given by \texttt{bg.R}.}
+    \label{tab:bg}
+    \begin{tabular}{c|c|c}
+        Origin--destination (rate) & Route & Rate (pkt/s) \\
+        \hline
+        1--6 (343 pkt/s) & 1-2-4-6 & 170.2 \\
+                         & 1-3-5-6 & 172.8 \\
+                         & 1-2-5-6 & 0 \\
+        \hline
+        1--5 (64 pkt/s)  & 1-2-5 & 39.2 \\
+                         & 1-3-5 & 24.8 \\
+        \hline
+        2--5 (128 pkt/s) & 2-5   & 128 \\
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Exercise 13: average network packet delay with each routing (simulation: mean of 10 runs of 100~s $\pm$ 95\% CI half-width).}
+    \label{tab:pnet13summary}
+    \begin{tabular}{l|c|c|c}
+        Routing & $L$ (Kleinrock) & $W$ (Kleinrock) & $W$ (simulation) \\
+        \hline
+        a) Fixed routing                & 23.73 & 44.36~ms & $36.62\pm0.83$~ms \\
+        c) Flow 1 bifurcated            & 19.36 & 36.19~ms & $33.88\pm0.82$~ms \\
+        d) All flows bifurcated (\texttt{bg.R}) & 19.19 & 35.87~ms & $32.96\pm0.77$~ms \\
+    \end{tabular}
+\end{table}
+
+\textbf{Conclusion:} In the initial routing, flow 1 loads links $\ell_1$,
+$\ell_3$ and $\ell_6$ with $\rho=0.84$, while $\ell_4$ and $\ell_7$ are only half
+loaded. Splitting flow 1 over the two routes balances the four links and
+reduces the average network delay from 44.4 to 36.2~ms (18\%). Allowing all
+flows to be bifurcated still improves the delay, but only slightly, to
+35.9~ms (another 0.9\%): most of the gain comes from moving traffic away from
+$\ell_3$ and $\ell_6$, which question c) already does, and the remaining
+bifurcations only fine-tune the balance between the links
+(Table~\ref{tab:pnet13summary}). The simulation confirms the same ranking of the
+three routings. It also shows that the Kleinrock approximation overestimates
+the delay, by 21\% with fixed routing and by 7--9\% after bifurcation: when the
+traffic is better balanced, the link loads are lower and the flows are more
+mixed, so the approximation becomes more accurate, as found in Exercise~12.
+
 \section{Conclusion}
 
 The exercises of this laboratory show how Markov models and queuing theory can predict the performance of networks and systems, and how discrete-event simulation can confirm those predictions. In all cases where an exact model exists, the simulation estimates agree with the theory to within a few percent, and in most cases the theoretical value lies inside the confidence interval.
@@ -1034,6 +1371,8 @@ Discrete-time Markov chains extend independent Bernoulli models by capturing tem
 The queuing exercises show that steady-state performance measures only exist for $\rho<1$; for $\rho\ge1$, the measured delay simply grows with the length of the run. For a stable queue, delay depends not only on the load and the mean service time, but also on the variability of the service time: fixed packet sizes halve the M/M/1 queuing delay, while highly variable (mice--elephant) workloads increase it by more than an order of magnitude and make simulation estimates much less precise. Scheduling can redistribute this delay: strict priorities protect a high-priority flow without reducing the average delay, while giving priority to short jobs reduces the average delay by about 30\%.
 
 Finally, in a server farm, how jobs are assigned to servers matters as much as the capacity of the servers. Assigning jobs at random wastes capacity, because one server can be overloaded while another is idle. Using the state of the servers, as Join the Shortest Queue does, reduced the average delay by up to 45\%, with the largest gains at the highest loads. This is the principle behind the Least Connections and Least Time methods of load balancers such as NGINX.
+
+In packet switched networks, the Kleinrock approximation gives the delay of any network from simple M/M/1 formulas, but it ignores that a packet keeps its length from link to link. It is accurate at low and medium load and when many flows share the links, but it can overestimate the delay by more than 50\% for a single flow over tandem links at high load. Even so, it is a good basis for routing decisions: balancing the load by bifurcating the flows over several routes reduced the average network delay by about 19\%, and both the hand optimization and the gradient projection algorithm were confirmed by simulation.
 
 \begin{thebibliography}{9}
     \bibitem{nginx-wiki} ``Nginx'', Wikipedia. \url{https://en.wikipedia.org/wiki/Nginx}
